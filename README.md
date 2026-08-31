@@ -79,6 +79,14 @@ A pack config:
 `source.type` recognises: `npm`, `github-archive`, `github-release`,
 `github-tag`, `script` (pack-supplied refresh recipe), `url`.
 
+## <a name="documentation"></a>Documentation
+
+- [Installation](docs/installation.md), Docker-first, and the local alternative
+- [Getting started](docs/getting-started.md), check, sync, and what lands afterwards
+- [Configuration](docs/configuration.md), the per-pack JSON and where the vendored version lives
+- [Architecture](docs/architecture.md), the pipeline, and why the version records in the pack repo
+- [Release](docs/release.md), cutting a version and what it affects
+
 ## Architecture
 
 The tool is built around three composable primitives:
