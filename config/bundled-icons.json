@@ -1,0 +1,13 @@
+{
+  "_status": "RECIPE-PENDING -- the iconify aggregator pack composes 70+ upstream icon sets. Until src/ichava_maintainer_toolkit/recipes/bundled_icons.py lands, `sync --pack=bundled-icons` raises NotImplementedError with a clear pointer.",
+  "name": "bundled-icons",
+  "pack": "ichava/bundled-icons",
+  "pack_root": "/work/bundled-icons",
+  "current_version": "2.2.0",
+  "version_check_url": "https://registry.npmjs.org/@iconify/json/latest",
+  "source": {
+    "type": "url",
+    "version_field": "version"
+  },
+  "sinks": []
+}

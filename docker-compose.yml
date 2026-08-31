@@ -1,0 +1,31 @@
+# Compose wrapper for the ichava/maintainer-toolkit image. Mounts the parent monorepo
+# so the tool can read pack configs + write refreshed assets back into
+# sibling pack repos.
+#
+# All Makefile targets shell out to this. Run `make help` for the menu.
+
+services:
+  ichava-maintainer-toolkit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ichava/maintainer-toolkit:latest
+    # Mount the parent of this repo (the ichava/ org checkout) at /work.
+    # Each sibling pack lives at /work/<pack>/.
+    volumes:
+      - ../:/work:rw
+      # Persist npm cache between runs to skip redundant tarball downloads.
+      - ichava_maintainer_toolkit_npm_cache:/root/.npm
+      # Persist pip cache (only matters if you re-install editable mode).
+      - ichava_maintainer_toolkit_pip_cache:/root/.cache/pip
+    working_dir: /work/dev
+    environment:
+      # gh uses GH_TOKEN to authenticate non-interactively.
+      - GH_TOKEN
+      - ICHAVA_DEV_LOG_LEVEL=${ICHAVA_DEV_LOG_LEVEL:-INFO}
+    tty: true
+    stdin_open: true
+
+volumes:
+  ichava_maintainer_toolkit_npm_cache:
+  ichava_maintainer_toolkit_pip_cache:

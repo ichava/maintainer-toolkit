@@ -1,0 +1,13 @@
+{
+  "_note": "Recipe-dispatched: the CLI matches cfg.name=='emoji-sets' and runs src/ichava_maintainer_toolkit/recipes/emoji_sets.py (composes Twemoji npm + OpenMoji github + Unicode CLDR).",
+  "name": "emoji-sets",
+  "pack": "ichava/emoji-sets",
+  "pack_root": "/work/emoji-sets",
+  "current_version": "17.0.0",
+  "version_check_url": "https://registry.npmjs.org/@twemoji/svg/latest",
+  "source": {
+    "type": "url",
+    "version_field": "version"
+  },
+  "sinks": []
+}

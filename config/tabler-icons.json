@@ -1,0 +1,23 @@
+{
+  "name": "tabler-icons",
+  "pack": "ichava/tabler-icons",
+  "pack_root": "/work/tabler-icons",
+  "current_version": "3.0.0",
+  "version_check_url": "https://registry.npmjs.org/@tabler/icons/latest",
+  "source": {
+    "type": "npm",
+    "package": "@tabler/icons",
+    "source_path": "icons"
+  },
+  "sinks": [
+    {
+      "type": "filesystem",
+      "root": "{pack_root}/resources/assets/svg/files"
+    },
+    {
+      "type": "git-branch",
+      "repo_root": "{pack_root}",
+      "branch": "chore/sync-upstream-{version}"
+    }
+  ]
+}

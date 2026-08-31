@@ -1,0 +1,23 @@
+{
+  "name": "flag-icons",
+  "pack": "ichava/flag-icons",
+  "pack_root": "/work/flag-icons",
+  "current_version": "7.0.0",
+  "version_check_url": "https://registry.npmjs.org/flag-icons/latest",
+  "source": {
+    "type": "npm",
+    "package": "flag-icons",
+    "source_path": "flags"
+  },
+  "sinks": [
+    {
+      "type": "filesystem",
+      "root": "{pack_root}/resources/assets/svg/files"
+    },
+    {
+      "type": "git-branch",
+      "repo_root": "{pack_root}",
+      "branch": "chore/sync-upstream-{version}"
+    }
+  ]
+}
