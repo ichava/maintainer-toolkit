@@ -2,7 +2,7 @@
   "name": "tabler-icons",
   "pack": "ichava/tabler-icons",
   "pack_root": "/work/tabler-icons",
-  "current_version": "3.0.0",
+  "current_version": "3.46.0",
   "version_check_url": "https://registry.npmjs.org/@tabler/icons/latest",
   "source": {
     "type": "npm",
