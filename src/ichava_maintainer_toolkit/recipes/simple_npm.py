@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from ichava_maintainer_toolkit.core.config import PackConfig, interpolate
 from ichava_maintainer_toolkit.core.pipeline import Pipeline
-from ichava_maintainer_toolkit.core.sinks import Filesystem, GitBranch
+from ichava_maintainer_toolkit.core.sinks import Filesystem, GitBranch, VersionStamp
 from ichava_maintainer_toolkit.core.sources import NpmTarball
 from ichava_maintainer_toolkit.core.transforms import Sanitise, SubsetTo
 
@@ -45,6 +45,10 @@ def build(pack: PackConfig, *, version: str, dry_run: bool = False) -> Pipeline:
         elif sink_cfg.type == "git-branch":
             if dry_run:
                 continue
+            # Stamp before committing: GitBranch commits everything uncommitted
+            # in the pack repo, so the version record ships in the same commit
+            # as the assets it describes (V49).
+            pipe.sink(VersionStamp(pack=pack))
             pipe.sink(
                 GitBranch(
                     repo_root=sink_cfg.repo_root or pack.pack_root,

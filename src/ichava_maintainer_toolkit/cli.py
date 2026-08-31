@@ -29,7 +29,6 @@ from ichava_maintainer_toolkit.core.config import (
     load_all,
     load_pack,
     load_registry,
-    write_pack_config,
 )
 from ichava_maintainer_toolkit.core.reporters import TtyReporter
 from ichava_maintainer_toolkit.version import __version__
@@ -100,7 +99,7 @@ def sync(
     force: Annotated[bool, typer.Option("--force", help="Refresh even when not stale")] = False,
     config_dir: Annotated[Path, typer.Option("--config-dir")] = DEFAULT_CONFIG_DIR,
 ) -> None:
-    """Refresh upstream assets, bump current_version, optionally commit + PR."""
+    """Refresh upstream assets, record the version in the pack, commit + PR."""
     if not pack and not all_packs:
         raise typer.BadParameter("pass --pack=<slug> or --all")
 
@@ -123,8 +122,11 @@ def sync(
             console.print(f"[red]{cfg.pack}: {outcome.error}[/red]")
             exit_code = 1
             continue
-        if not dry_run:
-            _bump_current_version(cfg, result.latest, config_dir)
+        # The version is recorded by the VersionStamp sink, inside the pack
+        # repo, so GitBranch commits it with the assets. Bumping this
+        # repository's config here instead is what made the sync
+        # non-convergent (V49): under Docker, config_dir is the runner's
+        # throwaway checkout, deleted by the workflow's cleanup step.
         console.print(f"[green]{cfg.pack}: done -- {outcome.summary()}[/green]")
 
     raise typer.Exit(code=exit_code)
@@ -259,12 +261,6 @@ def _run_recipe(cfg: PackConfig, *, version: str, dry_run: bool) -> typing.Any:
         f"Either add a `recipes/{cfg.name.replace('-', '_')}.py` module + dispatch here, "
         f"or switch the pack to source.type=npm if a single npm package covers it."
     )
-
-
-def _bump_current_version(cfg: PackConfig, new_version: str, config_dir: Path) -> None:
-    """Persist the bumped current_version back to the pack's config JSON."""
-    cfg = cfg.model_copy(update={"current_version": new_version})
-    write_pack_config(cfg, config_dir)
 
 
 # Late-bound to dodge a circular import in some envs.

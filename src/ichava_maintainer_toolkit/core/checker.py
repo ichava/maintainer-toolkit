@@ -13,7 +13,11 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from ichava_maintainer_toolkit.core.config import PackConfig, SourceConfig
+from ichava_maintainer_toolkit.core.config import (
+    PackConfig,
+    SourceConfig,
+    resolved_current_version,
+)
 from ichava_maintainer_toolkit.core.http import get_json
 
 logger = logging.getLogger(__name__)
@@ -30,27 +34,32 @@ class CheckResult:
 
 
 def check_pack(pack: PackConfig) -> CheckResult:
-    """Resolve the latest version + compare against `pack.current_version`."""
+    """Resolve the latest version + compare against what the pack repo vendors.
+
+    The comparison base is `resolved_current_version`, which reads the pack
+    repo's own config first. Comparing against this repository's
+    `current_version` is what made the sync non-convergent (V49): the bump was
+    written into the runner's throwaway checkout and never committed, so every
+    run saw the same stale value.
+    """
+    current = resolved_current_version(pack)
+
     if not pack.version_check_url:
-        return CheckResult(
-            pack.pack, pack.current_version, None, False, None, "no version_check_url"
-        )
+        return CheckResult(pack.pack, current, None, False, None, "no version_check_url")
     try:
         payload = get_json(pack.version_check_url)
     except Exception as e:
-        return CheckResult(pack.pack, pack.current_version, None, False, None, f"unreachable: {e}")
+        return CheckResult(pack.pack, current, None, False, None, f"unreachable: {e}")
 
     latest = parse_latest(pack.source, payload)
     if latest is None:
-        return CheckResult(
-            pack.pack, pack.current_version, None, False, None, "could not parse latest"
-        )
+        return CheckResult(pack.pack, current, None, False, None, "could not parse latest")
 
     return CheckResult(
         package=pack.pack,
-        current=pack.current_version,
+        current=current,
         latest=latest,
-        stale=is_stale(pack.current_version, latest),
+        stale=is_stale(current, latest),
         release_url=resolve_release_url(pack.source, payload, latest),
     )
 

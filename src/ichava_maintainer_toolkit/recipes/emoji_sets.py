@@ -25,7 +25,7 @@ from pathlib import Path
 
 from ichava_maintainer_toolkit.core.config import PackConfig
 from ichava_maintainer_toolkit.core.pipeline import Pipeline
-from ichava_maintainer_toolkit.core.sinks import Filesystem, GitBranch
+from ichava_maintainer_toolkit.core.sinks import Filesystem, GitBranch, VersionStamp
 from ichava_maintainer_toolkit.core.sources import GithubArchive, NpmTarball, UnicodeCldr
 from ichava_maintainer_toolkit.core.transforms import Categorise, Indexer, Sanitise, SubsetTo
 
@@ -133,6 +133,7 @@ def build(
                 old_version=pack.current_version or "unknown",
             )
             .source(_NoOpSource())
+            .sink(VersionStamp(pack=pack))
             .sink(GitBranch(repo_root=str(pack_root)))
         )
         pipelines.append(final)
