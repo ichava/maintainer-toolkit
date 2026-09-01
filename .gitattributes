@@ -1,0 +1,14 @@
+# Force LF for scripts so Windows clones do not break the shebang.
+*.sh    text eol=lf
+*.py    text eol=lf
+
+*.json  text
+*.yml   text
+*.yaml  text
+
+# Keep the sdist lean.
+/.github        export-ignore
+/tests          export-ignore
+/.editorconfig  export-ignore
+/.gitattributes export-ignore
+/CONTRIBUTING.md export-ignore
