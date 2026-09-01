@@ -1,14 +1,12 @@
 # Tests + lint + typecheck for ichava/maintainer-toolkit.
 #
-# Runs on every push to main + every pull request. Matrix covers the
+# Runs on every pull request. Matrix covers the
 # Python versions the project declares it supports (>=3.10 in
 # pyproject.toml).
 
 name: Tests
 
 on:
-  push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
 
