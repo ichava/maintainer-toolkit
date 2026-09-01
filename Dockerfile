@@ -7,7 +7,7 @@
 # Run:      docker run --rm -v "$PWD/..:/work" -w /work/dev ichava/maintainer-toolkit menu
 # Compose:  see docker-compose.yml + Makefile.
 
-FROM python:3.12-slim AS base
+FROM python:3.14-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
