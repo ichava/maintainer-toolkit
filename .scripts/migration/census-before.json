@@ -1,0 +1,1737 @@
+{
+  "schemaVersion": 1,
+  "root": "/Users/imanimanyara/Artisan/projects/opensource/ichava",
+  "mode": "ANALYSIS",
+  "policy": {
+    "path": "maintainer-toolkit/.scripts/migration/policy.json",
+    "loaded": true,
+    "usable": true,
+    "error": null,
+    "note": null
+  },
+  "totals": {
+    "packs": 11,
+    "packsScanned": 8,
+    "packsNotInstalled": 3,
+    "svgFiles": 128918,
+    "bytes": 127439008
+  },
+  "warnings": [
+    "emoji-sets: NO_SVG_FILES — reported as NOT SCANNED, not as clean. A pack with no SVGs cannot be assessed.",
+    "ichava: NO_SVG_FILES — reported as NOT SCANNED, not as clean. A pack with no SVGs cannot be assessed.",
+    "motion: NO_SVG_FILES — reported as NOT SCANNED, not as clean. A pack with no SVGs cannot be assessed."
+  ],
+  "packs": [
+    {
+      "pack": "browser",
+      "path": "browser",
+      "status": "SCANNED",
+      "files": {
+        "total": 551,
+        "svg": 47,
+        "nonSvg": 504,
+        "bytes": 14221,
+        "extensions": {
+          "(none)": 8,
+          ".css": 1,
+          ".dist": 1,
+          ".example": 1,
+          ".js": 6,
+          ".json": 8,
+          ".lock": 1,
+          ".map": 1,
+          ".md": 6,
+          ".php": 53,
+          ".scss": 1,
+          ".svg": 47,
+          ".ts": 91,
+          ".tsx": 2,
+          ".vue": 324
+        }
+      },
+      "constructs": {
+        "attribute:clip-rule": 1,
+        "attribute:cx": 1,
+        "attribute:cy": 1,
+        "attribute:d": 47,
+        "attribute:fill": 47,
+        "attribute:fill-rule": 1,
+        "attribute:height": 2,
+        "attribute:r": 1,
+        "attribute:stroke": 44,
+        "attribute:stroke-linecap": 44,
+        "attribute:stroke-linejoin": 44,
+        "attribute:stroke-width": 44,
+        "attribute:viewbox": 47,
+        "attribute:width": 2,
+        "attribute:xmlns": 47,
+        "element:circle": 1,
+        "element:path": 47,
+        "element:svg": 47,
+        "has:hardcodedSize": 2,
+        "paint:currentColor": 47,
+        "paint:presentation-attribute": 47
+      },
+      "paintArchetypes": {
+        "paint:currentColor": 47,
+        "paint:presentation-attribute": 47
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {
+          "renders-correctly": 47
+        },
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    },
+    {
+      "pack": "bundled-icons",
+      "path": "bundled-icons",
+      "status": "SCANNED",
+      "files": {
+        "total": 121353,
+        "svg": 121314,
+        "nonSvg": 39,
+        "bytes": 109807077,
+        "extensions": {
+          "(none)": 15,
+          ".dist": 1,
+          ".json": 2,
+          ".lock": 1,
+          ".md": 10,
+          ".php": 9,
+          ".svg": 121314,
+          ".txt": 1
+        }
+      },
+      "constructs": {
+        "attribute:aria-hidden": 6684,
+        "attribute:aria-label": 1,
+        "attribute:aria-labelledby": 283,
+        "attribute:baseprofile": 329,
+        "attribute:class": 6377,
+        "attribute:clip-path": 438,
+        "attribute:clip-rule": 9566,
+        "attribute:color": 17,
+        "attribute:color-interpolation-filters": 6,
+        "attribute:connector-curvature": 292,
+        "attribute:cx": 5599,
+        "attribute:cy": 5599,
+        "attribute:d": 120056,
+        "attribute:data-name": 3282,
+        "attribute:data-slot": 1288,
+        "attribute:display": 22,
+        "attribute:docname": 301,
+        "attribute:dy": 6,
+        "attribute:enable-background": 7016,
+        "attribute:fill": 120819,
+        "attribute:fill-opacity": 3668,
+        "attribute:fill-rule": 11466,
+        "attribute:filter": 6,
+        "attribute:filterunits": 6,
+        "attribute:flood-opacity": 6,
+        "attribute:font-family": 17,
+        "attribute:font-size": 12,
+        "attribute:font-weight": 15,
+        "attribute:fx": 9,
+        "attribute:fy": 9,
+        "attribute:gradienttransform": 24,
+        "attribute:gradientunits": 25,
+        "attribute:groupmode": 7,
+        "attribute:height": 24576,
+        "attribute:href": 7,
+        "attribute:i:extraneous": 6,
+        "attribute:i:pgfencoding": 5,
+        "attribute:i:pgfversion": 5,
+        "attribute:id": 11896,
+        "attribute:image-rendering": 1,
+        "attribute:in": 6,
+        "attribute:in2": 6,
+        "attribute:inkscape:connector-curvature": 2,
+        "attribute:inkscape:groupmode": 151,
+        "attribute:inkscape:label": 151,
+        "attribute:inkscape:version": 151,
+        "attribute:label": 7,
+        "attribute:letter-spacing": 4,
+        "attribute:mask": 300,
+        "attribute:maskunits": 4,
+        "attribute:mode": 6,
+        "attribute:nodetypes": 6,
+        "attribute:offset": 31,
+        "attribute:opacity": 7194,
+        "attribute:overflow": 16,
+        "attribute:p-id": 51,
+        "attribute:paint-order": 1,
+        "attribute:points": 2297,
+        "attribute:preserveaspectratio": 1056,
+        "attribute:r": 5215,
+        "attribute:requiredextensions": 6,
+        "attribute:result": 6,
+        "attribute:role": 3972,
+        "attribute:rx": 1897,
+        "attribute:ry": 812,
+        "attribute:shape-rendering": 1,
+        "attribute:sodipodi:docname": 151,
+        "attribute:sodipodi:nodetypes": 6,
+        "attribute:stddeviation": 7,
+        "attribute:stop-color": 31,
+        "attribute:stop-opacity": 13,
+        "attribute:stroke": 28692,
+        "attribute:stroke-dasharray": 62,
+        "attribute:stroke-dashoffset": 2,
+        "attribute:stroke-linecap": 22965,
+        "attribute:stroke-linejoin": 20774,
+        "attribute:stroke-miterlimit": 1453,
+        "attribute:stroke-opacity": 5,
+        "attribute:stroke-width": 24282,
+        "attribute:style": 2989,
+        "attribute:t": 51,
+        "attribute:text-anchor": 2,
+        "attribute:text-rendering": 1,
+        "attribute:transform": 2773,
+        "attribute:type": 59,
+        "attribute:values": 6,
+        "attribute:version": 4962,
+        "attribute:viewbox": 121299,
+        "attribute:width": 24576,
+        "attribute:word-spacing": 4,
+        "attribute:x": 5569,
+        "attribute:x1": 576,
+        "attribute:x2": 576,
+        "attribute:xlink:href": 134,
+        "attribute:xml:space": 1332,
+        "attribute:xmlns": 113908,
+        "attribute:xmlns:cc": 151,
+        "attribute:xmlns:dc": 151,
+        "attribute:xmlns:graph": 6,
+        "attribute:xmlns:i": 6,
+        "attribute:xmlns:inkscape": 151,
+        "attribute:xmlns:rdf": 151,
+        "attribute:xmlns:sodipodi": 151,
+        "attribute:xmlns:svg": 152,
+        "attribute:xmlns:x": 6,
+        "attribute:xmlns:xlink": 2763,
+        "attribute:y": 5655,
+        "attribute:y1": 575,
+        "attribute:y2": 576,
+        "element:circle": 5210,
+        "element:clippath": 456,
+        "element:defs": 3232,
+        "element:desc": 1,
+        "element:ellipse": 603,
+        "element:feblend": 6,
+        "element:fecolormatrix": 6,
+        "element:feflood": 6,
+        "element:fegaussianblur": 7,
+        "element:feoffset": 6,
+        "element:filter": 7,
+        "element:foreignobject": 6,
+        "element:g": 12755,
+        "element:i:aipgf": 5,
+        "element:i:aipgfref": 5,
+        "element:i:pgf": 1,
+        "element:i:pgfref": 1,
+        "element:line": 554,
+        "element:lineargradient": 25,
+        "element:mask": 301,
+        "element:path": 120056,
+        "element:polygon": 1933,
+        "element:polyline": 386,
+        "element:radialgradient": 13,
+        "element:rect": 12924,
+        "element:stop": 31,
+        "element:style": 58,
+        "element:svg": 121313,
+        "element:switch": 11,
+        "element:text": 6,
+        "element:title": 6966,
+        "element:tspan": 6,
+        "element:use": 130,
+        "has:hardcodedSize": 11646,
+        "missing:viewBox": 15,
+        "paint:NONE-FOUND": 495,
+        "paint:currentColor": 116415,
+        "paint:gradient": 31,
+        "paint:presentation-attribute": 120819,
+        "paint:style-attribute": 2976,
+        "paint:style-element": 2,
+        "paint:use-reference": 130
+      },
+      "paintArchetypes": {
+        "paint:NONE-FOUND": 495,
+        "paint:currentColor": 116415,
+        "paint:gradient": 31,
+        "paint:presentation-attribute": 120819,
+        "paint:style-attribute": 2976,
+        "paint:style-element": 2,
+        "paint:use-reference": 130
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 3109,
+        "pctAffectedClient": 2.6,
+        "verdicts": {
+          "loses-colour": 2981,
+          "loses-shape": 128,
+          "renders-correctly": 118205
+        },
+        "lossCategories": {
+          "colour:gradient": 16,
+          "colour:style-attribute": 2976,
+          "shape:use-reference": 128
+        }
+      },
+      "policyDivergence": [
+        {
+          "kind": "attribute",
+          "name": "aria-labelledby",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "clip-path",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "fx",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "fy",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradienttransform",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradientunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "href",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "mask",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "maskunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "stop-opacity",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "stroke-dasharray",
+          "strippedBy": "server-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "style",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xlink:href",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xmlns:xlink",
+          "strippedBy": "server-only"
+        }
+      ],
+      "idCollisions": {
+        "total": 75,
+        "worst": [
+          {
+            "id": "_Transparent_Rectangle_",
+            "fileCount": 2157,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/carbon-icons/4k-filled.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/4k.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/accept-action-usage.svg"
+            ]
+          },
+          {
+            "id": "Vector",
+            "fileCount": 442,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/coolicons/add-column.svg",
+              "bundled-icons/resources/assets/svg/files/coolicons/add-minus-square.svg",
+              "bundled-icons/resources/assets/svg/files/coolicons/add-plus-circle.svg"
+            ]
+          },
+          {
+            "id": "defs2",
+            "fileCount": 151,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/academicons/academia-square.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/academia.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/acclaim-square.svg"
+            ]
+          },
+          {
+            "id": "layer6",
+            "fileCount": 150,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/academicons/academia-square.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/academia.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/acclaim-square.svg"
+            ]
+          },
+          {
+            "id": "path2",
+            "fileCount": 114,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/academicons/academia-square.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/academia.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/acclaim-square.svg"
+            ]
+          },
+          {
+            "id": "a",
+            "fileCount": 112,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/coreui-icons/flag/cif-au.svg",
+              "bundled-icons/resources/assets/svg/files/coreui-icons/flag/cif-bi.svg",
+              "bundled-icons/resources/assets/svg/files/coreui-icons/flag/cif-br.svg"
+            ]
+          },
+          {
+            "id": "_x3C_Transparent_Rectangle_x3E_",
+            "fileCount": 65,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/carbon-icons/ai-label.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/array-booleans.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/array-dates.svg"
+            ]
+          },
+          {
+            "id": "_x3C_Transparent_Rectangle_x3E__589_",
+            "fileCount": 58,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/carbon-icons/assembly-cluster.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/assembly-reference.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/assembly.svg"
+            ]
+          },
+          {
+            "id": "title833",
+            "fileCount": 58,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/academicons/academia.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/acclaim.svg",
+              "bundled-icons/resources/assets/svg/files/academicons/acm.svg"
+            ]
+          },
+          {
+            "id": "inner-path",
+            "fileCount": 49,
+            "sample": [
+              "bundled-icons/resources/assets/svg/files/carbon-icons/add-filled.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/charging-station-filled.svg",
+              "bundled-icons/resources/assets/svg/files/carbon-icons/checkbox-checked-filled.svg"
+            ]
+          }
+        ]
+      },
+      "worstAffectedSamples": [
+        {
+          "file": "bundled-icons/resources/assets/svg/files/coreui-icons/flag/cif-au.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "bundled-icons/resources/assets/svg/files/coreui-icons/flag/cif-bi.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "bundled-icons/resources/assets/svg/files/coreui-icons/flag/cif-br.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        }
+      ]
+    },
+    {
+      "pack": "core",
+      "path": "core",
+      "status": "SCANNED",
+      "files": {
+        "total": 166,
+        "svg": 4,
+        "nonSvg": 162,
+        "bytes": 865,
+        "extensions": {
+          "(none)": 9,
+          ".dist": 1,
+          ".example": 1,
+          ".json": 2,
+          ".lock": 1,
+          ".md": 6,
+          ".php": 122,
+          ".stub": 20,
+          ".svg": 4
+        }
+      },
+      "constructs": {
+        "attribute:cx": 1,
+        "attribute:cy": 1,
+        "attribute:d": 1,
+        "attribute:fill": 4,
+        "attribute:height": 1,
+        "attribute:points": 1,
+        "attribute:r": 1,
+        "attribute:rx": 1,
+        "attribute:ry": 1,
+        "attribute:stroke": 4,
+        "attribute:stroke-linecap": 4,
+        "attribute:stroke-linejoin": 4,
+        "attribute:stroke-width": 4,
+        "attribute:viewbox": 4,
+        "attribute:width": 1,
+        "attribute:x": 1,
+        "attribute:xmlns": 4,
+        "attribute:y": 1,
+        "element:circle": 1,
+        "element:path": 1,
+        "element:polyline": 1,
+        "element:rect": 1,
+        "element:svg": 4,
+        "paint:currentColor": 4,
+        "paint:presentation-attribute": 4
+      },
+      "paintArchetypes": {
+        "paint:currentColor": 4,
+        "paint:presentation-attribute": 4
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {
+          "renders-correctly": 4
+        },
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    },
+    {
+      "pack": "emoji-sets",
+      "path": "emoji-sets",
+      "status": "NO_SVG_FILES",
+      "files": {
+        "total": 28,
+        "svg": 0,
+        "nonSvg": 28,
+        "bytes": 0,
+        "extensions": {
+          "(none)": 6,
+          ".dist": 1,
+          ".json": 2,
+          ".lock": 1,
+          ".md": 9,
+          ".php": 9
+        }
+      },
+      "constructs": {},
+      "paintArchetypes": {},
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {},
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    },
+    {
+      "pack": "flag-icons",
+      "path": "flag-icons",
+      "status": "SCANNED",
+      "files": {
+        "total": 568,
+        "svg": 542,
+        "nonSvg": 26,
+        "bytes": 4004321,
+        "extensions": {
+          "(none)": 6,
+          ".dist": 1,
+          ".json": 2,
+          ".lock": 1,
+          ".md": 8,
+          ".php": 8,
+          ".svg": 542
+        }
+      },
+      "constructs": {
+        "attribute:aria-label": 6,
+        "attribute:class": 8,
+        "attribute:clip-path": 141,
+        "attribute:color": 4,
+        "attribute:cx": 82,
+        "attribute:cy": 84,
+        "attribute:d": 542,
+        "attribute:fill": 542,
+        "attribute:fill-opacity": 125,
+        "attribute:fill-rule": 264,
+        "attribute:font-family": 8,
+        "attribute:font-size": 10,
+        "attribute:font-weight": 6,
+        "attribute:fx": 4,
+        "attribute:fy": 4,
+        "attribute:gradienttransform": 14,
+        "attribute:gradientunits": 14,
+        "attribute:height": 123,
+        "attribute:id": 542,
+        "attribute:letter-spacing": 2,
+        "attribute:marker-mid": 4,
+        "attribute:markerheight": 4,
+        "attribute:markerwidth": 4,
+        "attribute:mask": 2,
+        "attribute:offset": 14,
+        "attribute:opacity": 4,
+        "attribute:overflow": 2,
+        "attribute:r": 86,
+        "attribute:rx": 32,
+        "attribute:ry": 33,
+        "attribute:stop-color": 14,
+        "attribute:stop-opacity": 2,
+        "attribute:stroke": 180,
+        "attribute:stroke-dasharray": 2,
+        "attribute:stroke-dashoffset": 2,
+        "attribute:stroke-linecap": 58,
+        "attribute:stroke-linejoin": 66,
+        "attribute:stroke-miterlimit": 18,
+        "attribute:stroke-opacity": 4,
+        "attribute:stroke-width": 262,
+        "attribute:style": 8,
+        "attribute:text-anchor": 2,
+        "attribute:transform": 268,
+        "attribute:version": 2,
+        "attribute:viewbox": 542,
+        "attribute:width": 123,
+        "attribute:word-spacing": 2,
+        "attribute:x": 36,
+        "attribute:x1": 10,
+        "attribute:x2": 10,
+        "attribute:xlink:href": 130,
+        "attribute:xml:space": 12,
+        "attribute:xmlns": 542,
+        "attribute:xmlns:xlink": 130,
+        "attribute:y": 38,
+        "attribute:y1": 10,
+        "attribute:y2": 10,
+        "element:circle": 86,
+        "element:clippath": 141,
+        "element:defs": 167,
+        "element:ellipse": 25,
+        "element:g": 359,
+        "element:lineargradient": 12,
+        "element:marker": 4,
+        "element:path": 542,
+        "element:radialgradient": 6,
+        "element:rect": 12,
+        "element:stop": 14,
+        "element:svg": 542,
+        "element:use": 126,
+        "paint:gradient": 14,
+        "paint:presentation-attribute": 542,
+        "paint:style-attribute": 2,
+        "paint:use-reference": 126
+      },
+      "paintArchetypes": {
+        "paint:gradient": 14,
+        "paint:presentation-attribute": 542,
+        "paint:style-attribute": 2,
+        "paint:use-reference": 126
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 132,
+        "pctAffectedClient": 24.4,
+        "verdicts": {
+          "loses-colour": 6,
+          "loses-shape": 126,
+          "renders-correctly": 410
+        },
+        "lossCategories": {
+          "colour:gradient": 14,
+          "colour:style-attribute": 2,
+          "shape:use-reference": 126
+        }
+      },
+      "policyDivergence": [
+        {
+          "kind": "attribute",
+          "name": "clip-path",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "fx",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "fy",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradienttransform",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradientunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "mask",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "stop-opacity",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "stroke-dasharray",
+          "strippedBy": "server-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "style",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xlink:href",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xmlns:xlink",
+          "strippedBy": "server-only"
+        }
+      ],
+      "idCollisions": {
+        "total": 576,
+        "worst": [
+          {
+            "id": "ad-a",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ad.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ad.svg"
+            ]
+          },
+          {
+            "id": "ad-b",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ad.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ad.svg"
+            ]
+          },
+          {
+            "id": "af-a",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/af.svg",
+              "flag-icons/resources/assets/svg/files/4x3/af.svg"
+            ]
+          },
+          {
+            "id": "ag-a",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ag.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ag.svg"
+            ]
+          },
+          {
+            "id": "ai-a",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ai.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ai.svg"
+            ]
+          },
+          {
+            "id": "ai-b",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ai.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ai.svg"
+            ]
+          },
+          {
+            "id": "al-a",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/al.svg",
+              "flag-icons/resources/assets/svg/files/4x3/al.svg"
+            ]
+          },
+          {
+            "id": "ar-a",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ar.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ar.svg"
+            ]
+          },
+          {
+            "id": "ar-b",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ar.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ar.svg"
+            ]
+          },
+          {
+            "id": "ar-c",
+            "fileCount": 2,
+            "sample": [
+              "flag-icons/resources/assets/svg/files/1x1/ar.svg",
+              "flag-icons/resources/assets/svg/files/4x3/ar.svg"
+            ]
+          }
+        ]
+      },
+      "worstAffectedSamples": [
+        {
+          "file": "flag-icons/resources/assets/svg/files/1x1/ad.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "flag-icons/resources/assets/svg/files/1x1/af.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "flag-icons/resources/assets/svg/files/1x1/ai.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        }
+      ]
+    },
+    {
+      "pack": "ichava",
+      "path": ".",
+      "status": "NO_SVG_FILES",
+      "files": {
+        "total": 166,
+        "svg": 0,
+        "nonSvg": 166,
+        "bytes": 0,
+        "extensions": {
+          "(none)": 16,
+          ".json": 6,
+          ".md": 40,
+          ".py": 37,
+          ".pyc": 65,
+          ".toml": 1,
+          ".yml": 1
+        }
+      },
+      "constructs": {},
+      "paintArchetypes": {},
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {},
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    },
+    {
+      "pack": "ichava-demo-app",
+      "path": "ichava-demo-app",
+      "status": "SCANNED",
+      "files": {
+        "total": 357,
+        "svg": 1,
+        "nonSvg": 356,
+        "bytes": 3545,
+        "extensions": {
+          "(none)": 16,
+          ".css": 3,
+          ".example": 1,
+          ".ico": 1,
+          ".js": 51,
+          ".json": 10,
+          ".lock": 1,
+          ".md": 2,
+          ".neon": 1,
+          ".php": 94,
+          ".png": 1,
+          ".sqlite": 1,
+          ".svg": 1,
+          ".ts": 77,
+          ".tsx": 88,
+          ".txt": 1,
+          ".woff": 3,
+          ".woff2": 3,
+          ".xml": 1,
+          ".yaml": 1
+        }
+      },
+      "constructs": {
+        "attribute:clip-rule": 1,
+        "attribute:d": 1,
+        "attribute:fill": 1,
+        "attribute:fill-rule": 1,
+        "attribute:height": 1,
+        "attribute:viewbox": 1,
+        "attribute:width": 1,
+        "attribute:xmlns": 1,
+        "element:path": 1,
+        "element:svg": 1,
+        "has:hardcodedSize": 1,
+        "paint:presentation-attribute": 1
+      },
+      "paintArchetypes": {
+        "paint:presentation-attribute": 1
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {
+          "renders-correctly": 1
+        },
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    },
+    {
+      "pack": "metronic-icons",
+      "path": "metronic-icons",
+      "status": "SCANNED",
+      "files": {
+        "total": 531,
+        "svg": 501,
+        "nonSvg": 30,
+        "bytes": 6821667,
+        "extensions": {
+          "(none)": 9,
+          ".dist": 1,
+          ".json": 2,
+          ".lock": 1,
+          ".md": 8,
+          ".php": 9,
+          ".svg": 501
+        }
+      },
+      "constructs": {
+        "attribute:class": 1,
+        "attribute:clip-path": 64,
+        "attribute:clip-rule": 52,
+        "attribute:color-interpolation-filters": 2,
+        "attribute:cx": 38,
+        "attribute:cy": 38,
+        "attribute:d": 426,
+        "attribute:data-name": 1,
+        "attribute:dy": 2,
+        "attribute:fill": 240,
+        "attribute:fill-opacity": 2,
+        "attribute:fill-rule": 52,
+        "attribute:filter": 2,
+        "attribute:filterunits": 2,
+        "attribute:flood-opacity": 2,
+        "attribute:gradienttransform": 1,
+        "attribute:gradientunits": 20,
+        "attribute:height": 490,
+        "attribute:id": 335,
+        "attribute:in": 2,
+        "attribute:in2": 2,
+        "attribute:mask": 2,
+        "attribute:maskunits": 2,
+        "attribute:mode": 2,
+        "attribute:offset": 20,
+        "attribute:opacity": 37,
+        "attribute:operator": 1,
+        "attribute:patterncontentunits": 5,
+        "attribute:points": 111,
+        "attribute:preserveaspectratio": 1,
+        "attribute:r": 29,
+        "attribute:result": 2,
+        "attribute:rx": 18,
+        "attribute:ry": 14,
+        "attribute:stddeviation": 2,
+        "attribute:stop-color": 20,
+        "attribute:stop-opacity": 5,
+        "attribute:stroke": 4,
+        "attribute:stroke-miterlimit": 2,
+        "attribute:stroke-width": 1,
+        "attribute:style": 263,
+        "attribute:transform": 67,
+        "attribute:type": 2,
+        "attribute:values": 2,
+        "attribute:version": 261,
+        "attribute:viewbox": 501,
+        "attribute:width": 490,
+        "attribute:x": 270,
+        "attribute:x1": 19,
+        "attribute:x2": 19,
+        "attribute:xlink:href": 5,
+        "attribute:xml:space": 261,
+        "attribute:xmlns": 501,
+        "attribute:xmlns:xlink": 266,
+        "attribute:y": 270,
+        "attribute:y1": 19,
+        "attribute:y2": 19,
+        "element:circle": 28,
+        "element:clippath": 64,
+        "element:defs": 74,
+        "element:ellipse": 14,
+        "element:feblend": 2,
+        "element:fecolormatrix": 2,
+        "element:fecomposite": 1,
+        "element:feflood": 2,
+        "element:fegaussianblur": 2,
+        "element:feoffset": 2,
+        "element:filter": 2,
+        "element:g": 328,
+        "element:image": 5,
+        "element:lineargradient": 19,
+        "element:mask": 2,
+        "element:path": 426,
+        "element:pattern": 5,
+        "element:polygon": 110,
+        "element:polyline": 2,
+        "element:radialgradient": 1,
+        "element:rect": 320,
+        "element:stop": 20,
+        "element:svg": 501,
+        "element:use": 5,
+        "has:hardcodedSize": 239,
+        "paint:currentColor": 1,
+        "paint:gradient": 20,
+        "paint:image": 5,
+        "paint:presentation-attribute": 240,
+        "paint:style-attribute": 261,
+        "paint:use-reference": 5,
+        "ref:non-fragment-href": 5
+      },
+      "paintArchetypes": {
+        "paint:currentColor": 1,
+        "paint:gradient": 20,
+        "paint:image": 5,
+        "paint:presentation-attribute": 240,
+        "paint:style-attribute": 261,
+        "paint:use-reference": 5
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 266,
+        "pctAffectedClient": 53.1,
+        "verdicts": {
+          "loses-colour": 261,
+          "loses-shape": 5,
+          "renders-correctly": 235
+        },
+        "lossCategories": {
+          "colour:sole-paint-source": 261,
+          "shape:use-reference": 5
+        }
+      },
+      "policyDivergence": [
+        {
+          "kind": "attribute",
+          "name": "clip-path",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradienttransform",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradientunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "mask",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "maskunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "stop-opacity",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "style",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xlink:href",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xmlns:xlink",
+          "strippedBy": "server-only"
+        }
+      ],
+      "idCollisions": {
+        "total": 5,
+        "worst": [
+          {
+            "id": "Layer_1",
+            "fileCount": 261,
+            "sample": [
+              "metronic-icons/resources/assets/svg/files/flags/afghanistan.svg",
+              "metronic-icons/resources/assets/svg/files/flags/aland-islands.svg",
+              "metronic-icons/resources/assets/svg/files/flags/albania.svg"
+            ]
+          },
+          {
+            "id": "pattern0",
+            "fileCount": 4,
+            "sample": [
+              "metronic-icons/resources/assets/svg/files/brand-logos/boomerang.svg",
+              "metronic-icons/resources/assets/svg/files/brand-logos/netcore-2.svg",
+              "metronic-icons/resources/assets/svg/files/brand-logos/netcore.svg"
+            ]
+          },
+          {
+            "id": "clip0_12720_25198",
+            "fileCount": 2,
+            "sample": [
+              "metronic-icons/resources/assets/svg/files/brand-logos/figma.svg",
+              "metronic-icons/resources/assets/svg/files/file-types/figma.svg"
+            ]
+          },
+          {
+            "id": "pattern1",
+            "fileCount": 2,
+            "sample": [
+              "metronic-icons/resources/assets/svg/files/brand-logos/boomerang.svg",
+              "metronic-icons/resources/assets/svg/files/brand-logos/perrier.svg"
+            ]
+          },
+          {
+            "id": "pattern2",
+            "fileCount": 2,
+            "sample": [
+              "metronic-icons/resources/assets/svg/files/brand-logos/boomerang.svg",
+              "metronic-icons/resources/assets/svg/files/brand-logos/perrier.svg"
+            ]
+          }
+        ]
+      },
+      "worstAffectedSamples": [
+        {
+          "file": "metronic-icons/resources/assets/svg/files/brand-logos/boomerang.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "metronic-icons/resources/assets/svg/files/brand-logos/netcore-2.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "metronic-icons/resources/assets/svg/files/brand-logos/netcore.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        }
+      ]
+    },
+    {
+      "pack": "motion",
+      "path": "motion",
+      "status": "NO_SVG_FILES",
+      "files": {
+        "total": 25,
+        "svg": 0,
+        "nonSvg": 25,
+        "bytes": 0,
+        "extensions": {
+          "(none)": 5,
+          ".html": 1,
+          ".js": 1,
+          ".json": 2,
+          ".md": 11,
+          ".mjs": 4,
+          ".scss": 1
+        }
+      },
+      "constructs": {},
+      "paintArchetypes": {},
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {},
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    },
+    {
+      "pack": "react-browser",
+      "path": "react-browser",
+      "status": "SCANNED",
+      "files": {
+        "total": 585,
+        "svg": 325,
+        "nonSvg": 260,
+        "bytes": 3170419,
+        "extensions": {
+          "(none)": 8,
+          ".cjs": 1,
+          ".css": 3,
+          ".html": 4,
+          ".js": 1,
+          ".json": 17,
+          ".md": 10,
+          ".mjs": 2,
+          ".png": 56,
+          ".svg": 325,
+          ".ts": 80,
+          ".tsbuildinfo": 2,
+          ".tsx": 76
+        }
+      },
+      "constructs": {
+        "attribute:aria-hidden": 2,
+        "attribute:class": 50,
+        "attribute:clip-path": 37,
+        "attribute:clip-rule": 17,
+        "attribute:color-interpolation-filters": 2,
+        "attribute:cx": 14,
+        "attribute:cy": 14,
+        "attribute:d": 317,
+        "attribute:data-name": 2,
+        "attribute:dy": 2,
+        "attribute:enable-background": 3,
+        "attribute:fill": 303,
+        "attribute:fill-opacity": 21,
+        "attribute:fill-rule": 44,
+        "attribute:filter": 2,
+        "attribute:filterunits": 2,
+        "attribute:flood-opacity": 2,
+        "attribute:fx": 1,
+        "attribute:fy": 1,
+        "attribute:gradienttransform": 3,
+        "attribute:gradientunits": 7,
+        "attribute:height": 196,
+        "attribute:i:extraneous": 3,
+        "attribute:i:pgfencoding": 3,
+        "attribute:i:pgfversion": 3,
+        "attribute:id": 112,
+        "attribute:in": 2,
+        "attribute:in2": 2,
+        "attribute:inkscape:groupmode": 7,
+        "attribute:inkscape:label": 7,
+        "attribute:inkscape:version": 7,
+        "attribute:marker-mid": 2,
+        "attribute:markerheight": 2,
+        "attribute:markerwidth": 2,
+        "attribute:mask": 3,
+        "attribute:maskunits": 3,
+        "attribute:mode": 2,
+        "attribute:offset": 7,
+        "attribute:opacity": 4,
+        "attribute:operator": 1,
+        "attribute:p-id": 3,
+        "attribute:patterncontentunits": 7,
+        "attribute:points": 13,
+        "attribute:preserveaspectratio": 1,
+        "attribute:r": 11,
+        "attribute:requiredextensions": 3,
+        "attribute:result": 2,
+        "attribute:role": 1,
+        "attribute:rx": 7,
+        "attribute:ry": 6,
+        "attribute:sodipodi:docname": 7,
+        "attribute:stddeviation": 2,
+        "attribute:stop-color": 7,
+        "attribute:stop-opacity": 1,
+        "attribute:stroke": 184,
+        "attribute:stroke-linecap": 145,
+        "attribute:stroke-linejoin": 143,
+        "attribute:stroke-miterlimit": 2,
+        "attribute:stroke-width": 164,
+        "attribute:style": 31,
+        "attribute:t": 3,
+        "attribute:transform": 51,
+        "attribute:type": 5,
+        "attribute:values": 2,
+        "attribute:version": 36,
+        "attribute:viewbox": 325,
+        "attribute:width": 196,
+        "attribute:x": 37,
+        "attribute:x1": 7,
+        "attribute:x2": 7,
+        "attribute:xlink:href": 27,
+        "attribute:xml:space": 25,
+        "attribute:xmlns": 323,
+        "attribute:xmlns:cc": 7,
+        "attribute:xmlns:dc": 7,
+        "attribute:xmlns:graph": 3,
+        "attribute:xmlns:i": 3,
+        "attribute:xmlns:inkscape": 7,
+        "attribute:xmlns:rdf": 7,
+        "attribute:xmlns:sodipodi": 7,
+        "attribute:xmlns:svg": 7,
+        "attribute:xmlns:x": 3,
+        "attribute:xmlns:xlink": 52,
+        "attribute:y": 39,
+        "attribute:y1": 7,
+        "attribute:y2": 7,
+        "element:circle": 11,
+        "element:clippath": 37,
+        "element:defs": 65,
+        "element:ellipse": 5,
+        "element:feblend": 2,
+        "element:fecolormatrix": 2,
+        "element:fecomposite": 1,
+        "element:feflood": 2,
+        "element:fegaussianblur": 2,
+        "element:feoffset": 2,
+        "element:filter": 2,
+        "element:foreignobject": 3,
+        "element:g": 96,
+        "element:i:aipgf": 3,
+        "element:i:aipgfref": 3,
+        "element:image": 7,
+        "element:line": 1,
+        "element:lineargradient": 6,
+        "element:marker": 2,
+        "element:mask": 3,
+        "element:path": 317,
+        "element:pattern": 7,
+        "element:polygon": 13,
+        "element:radialgradient": 1,
+        "element:rect": 49,
+        "element:stop": 7,
+        "element:style": 3,
+        "element:svg": 325,
+        "element:switch": 3,
+        "element:title": 11,
+        "element:use": 23,
+        "has:hardcodedSize": 151,
+        "paint:NONE-FOUND": 1,
+        "paint:currentColor": 210,
+        "paint:gradient": 7,
+        "paint:image": 7,
+        "paint:presentation-attribute": 303,
+        "paint:style-attribute": 28,
+        "paint:use-reference": 23,
+        "ref:non-fragment-href": 7
+      },
+      "paintArchetypes": {
+        "paint:NONE-FOUND": 1,
+        "paint:currentColor": 210,
+        "paint:gradient": 7,
+        "paint:image": 7,
+        "paint:presentation-attribute": 303,
+        "paint:style-attribute": 28,
+        "paint:use-reference": 23
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 52,
+        "pctAffectedClient": 16,
+        "verdicts": {
+          "loses-colour": 29,
+          "loses-shape": 23,
+          "renders-correctly": 273
+        },
+        "lossCategories": {
+          "colour:gradient": 3,
+          "colour:sole-paint-source": 21,
+          "colour:style-attribute": 7,
+          "shape:use-reference": 23
+        }
+      },
+      "policyDivergence": [
+        {
+          "kind": "attribute",
+          "name": "clip-path",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "fx",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "fy",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradienttransform",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "gradientunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "mask",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "maskunits",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "stop-opacity",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "style",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xlink:href",
+          "strippedBy": "client-only"
+        },
+        {
+          "kind": "attribute",
+          "name": "xmlns:xlink",
+          "strippedBy": "server-only"
+        }
+      ],
+      "idCollisions": {
+        "total": 64,
+        "worst": [
+          {
+            "id": "Layer_1",
+            "fileCount": 21,
+            "sample": [
+              "react-browser/public/assets/metronic-icons/flags/algeria.svg",
+              "react-browser/public/assets/metronic-icons/flags/bahamas.svg",
+              "react-browser/public/assets/metronic-icons/flags/bolivia.svg"
+            ]
+          },
+          {
+            "id": "defs2",
+            "fileCount": 7,
+            "sample": [
+              "react-browser/public/assets/bundled-icons/academicons/academia-square.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acclaim.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acm-square.svg"
+            ]
+          },
+          {
+            "id": "layer6",
+            "fileCount": 7,
+            "sample": [
+              "react-browser/public/assets/bundled-icons/academicons/academia-square.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acclaim.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acm-square.svg"
+            ]
+          },
+          {
+            "id": "path2",
+            "fileCount": 7,
+            "sample": [
+              "react-browser/public/assets/bundled-icons/academicons/academia-square.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acclaim.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acm-square.svg"
+            ]
+          },
+          {
+            "id": "pattern0",
+            "fileCount": 6,
+            "sample": [
+              "react-browser/public/assets/metronic-icons/brand-logos/netcore-2.svg",
+              "react-browser/public/assets/metronic-icons/brand-logos/perrier.svg",
+              "react-browser/public/baseline/metronic-icons__foreign__perrier.svg"
+            ]
+          },
+          {
+            "id": "title835",
+            "fileCount": 4,
+            "sample": [
+              "react-browser/public/assets/bundled-icons/academicons/academia-square.svg",
+              "react-browser/public/baseline/bundled-icons__current_color__acm-square.svg",
+              "react-browser/public/baseline/bundled-icons__defs_ids__academia-square.svg"
+            ]
+          },
+          {
+            "id": "_x3C_Transparent_Rectangle_x3E__589_",
+            "fileCount": 3,
+            "sample": [
+              "react-browser/public/baseline/bundled-icons__foreign__calendar-add-alt.svg",
+              "react-browser/public/baseline/bundled-icons__foreign__calendar-add.svg",
+              "react-browser/public/baseline/bundled-icons__foreign__data-quality-definition.svg"
+            ]
+          },
+          {
+            "id": "ad-a",
+            "fileCount": 3,
+            "sample": [
+              "react-browser/public/assets/flag-icons/1x1/ad.svg",
+              "react-browser/public/assets/flag-icons/4x3/ad.svg",
+              "react-browser/public/baseline/flag-icons__use_ref__ad.svg"
+            ]
+          },
+          {
+            "id": "ad-b",
+            "fileCount": 3,
+            "sample": [
+              "react-browser/public/assets/flag-icons/1x1/ad.svg",
+              "react-browser/public/assets/flag-icons/4x3/ad.svg",
+              "react-browser/public/baseline/flag-icons__use_ref__ad.svg"
+            ]
+          },
+          {
+            "id": "adobe_illustrator_pgf",
+            "fileCount": 3,
+            "sample": [
+              "react-browser/public/baseline/bundled-icons__foreign__calendar-add-alt.svg",
+              "react-browser/public/baseline/bundled-icons__foreign__calendar-add.svg",
+              "react-browser/public/baseline/bundled-icons__foreign__data-quality-definition.svg"
+            ]
+          }
+        ]
+      },
+      "worstAffectedSamples": [
+        {
+          "file": "react-browser/public/assets/flag-icons/1x1/ad.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "react-browser/public/assets/flag-icons/1x1/cn.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        },
+        {
+          "file": "react-browser/public/assets/flag-icons/1x1/ke.svg",
+          "serverVerdict": "renders-correctly",
+          "clientVerdict": "loses-shape",
+          "rank": 3,
+          "worstVerdict": "loses-shape",
+          "losses": [
+            "shape:use-reference"
+          ],
+          "notes": [
+            "<use> reference removed — referenced content will not render"
+          ]
+        }
+      ]
+    },
+    {
+      "pack": "tabler-icons",
+      "path": "tabler-icons",
+      "status": "SCANNED",
+      "files": {
+        "total": 6217,
+        "svg": 6184,
+        "nonSvg": 33,
+        "bytes": 3616893,
+        "extensions": {
+          "(none)": 12,
+          ".dist": 1,
+          ".json": 2,
+          ".lock": 1,
+          ".md": 8,
+          ".php": 9,
+          ".svg": 6184
+        }
+      },
+      "constructs": {
+        "attribute:class": 6184,
+        "attribute:d": 6184,
+        "attribute:fill": 6184,
+        "attribute:height": 6184,
+        "attribute:opacity": 1,
+        "attribute:stroke": 6184,
+        "attribute:stroke-linecap": 5130,
+        "attribute:stroke-linejoin": 5130,
+        "attribute:stroke-width": 5130,
+        "attribute:viewbox": 6184,
+        "attribute:width": 6184,
+        "attribute:xmlns": 6184,
+        "element:path": 6184,
+        "element:svg": 6184,
+        "has:hardcodedSize": 6184,
+        "paint:currentColor": 6184,
+        "paint:presentation-attribute": 6184
+      },
+      "paintArchetypes": {
+        "paint:currentColor": 6184,
+        "paint:presentation-attribute": 6184
+      },
+      "renderPrediction": {
+        "affectedByServer": 0,
+        "affectedByClient": 0,
+        "pctAffectedClient": 0,
+        "verdicts": {
+          "renders-correctly": 6184
+        },
+        "lossCategories": {}
+      },
+      "policyDivergence": [],
+      "idCollisions": {
+        "total": 0,
+        "worst": []
+      },
+      "worstAffectedSamples": []
+    }
+  ]
+}
