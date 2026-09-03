@@ -67,9 +67,7 @@ class Sanitise(Transform):
                 original = svg.read_bytes()
 
                 try:
-                    new, removed = sanitise_bytes(
-                        original, also_strip_class=self.also_strip_class
-                    )
+                    new, removed = sanitise_bytes(original, also_strip_class=self.also_strip_class)
                 except etree.XMLSyntaxError as exc:
                     # Left alone and reported, never silently passed through.
                     unparsable += 1
