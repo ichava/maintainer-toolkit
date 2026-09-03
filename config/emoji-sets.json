@@ -1,9 +1,10 @@
 {
+  "_version_note": "current_version tracks @twemoji/svg on npm, whose latest is 15.0.0. It read 17.0.0, which has never been published -- `npm pack` failed with an empty message and the pack shipped zero SVGs (V4). It is NOT the Unicode emoji version (16.0) nor the OpenMoji release (17.0.0); all three move independently and version_check_url above is the authority for this one.",
   "_note": "Recipe-dispatched: the CLI matches cfg.name=='emoji-sets' and runs src/ichava_maintainer_toolkit/recipes/emoji_sets.py (composes Twemoji npm + OpenMoji github + Unicode CLDR).",
   "name": "emoji-sets",
   "pack": "ichava/emoji-sets",
   "pack_root": "/work/emoji-sets",
-  "current_version": "17.0.0",
+  "current_version": "15.0.0",
   "version_check_url": "https://registry.npmjs.org/@twemoji/svg/latest",
   "source": {
     "type": "url",

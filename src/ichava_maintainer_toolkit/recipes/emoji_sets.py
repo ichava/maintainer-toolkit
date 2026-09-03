@@ -37,10 +37,18 @@ def build(
     *,
     twemoji_version: str,
     openmoji_version: str = "15.1.0",
-    unicode_version: str = "17.0",
+    unicode_version: str = "16.0",
     dry_run: bool = False,
 ) -> list[Pipeline]:
     """Return the three pipelines in execution order.
+
+    ``unicode_version`` is NOT derived from ``twemoji_version`` and the two move
+    independently. This defaulted to "17.0" while Unicode had published nothing
+    past 16.0, so every run died on a 404 fetching ``emoji-test.txt`` -- which is
+    why ``ichava/emoji-sets`` shipped a tagged package with zero SVGs (`V4`). The
+    CLI does not pass this argument, so the default is the effective value:
+    check https://unicode.org/Public/emoji/ before bumping it.
+
 
     The CLI is expected to ``run()`` them sequentially; on first failure
     it should abort the rest (don't commit a half-refreshed asset tree).

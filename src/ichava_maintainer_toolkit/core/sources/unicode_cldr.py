@@ -31,6 +31,11 @@ class UnicodeCldr(Source):
         self.unicode_version = unicode_version
 
     def execute(self, ctx: StageContext) -> StageContext:
+        # A wrong version here 404s, and the raw HTTPError does not say why.
+        # Unicode publishes one directory per emoji release and nothing for a
+        # version that has not shipped, so the usual cause is a default that ran
+        # ahead of the standard -- exactly what left emoji-sets empty (`V4`).
+        # Check https://unicode.org/Public/emoji/ for what exists.
         url = f"https://unicode.org/Public/emoji/{self.unicode_version}/emoji-test.txt"
         target = ctx.working_dir / f"emoji-test-{self.unicode_version}.txt"
         download(url, target)
