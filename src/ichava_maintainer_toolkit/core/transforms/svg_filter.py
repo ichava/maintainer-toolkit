@@ -25,7 +25,7 @@ from ichava_maintainer_toolkit.core.transforms.svg_policy import (
 )
 
 
-class SvgPolicyViolation(RuntimeError):
+class SvgPolicyViolationError(RuntimeError):
     """Raised in strict mode when a document violates the policy."""
 
 

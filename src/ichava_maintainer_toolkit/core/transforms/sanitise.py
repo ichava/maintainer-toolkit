@@ -26,13 +26,13 @@ from lxml import etree
 from ichava_maintainer_toolkit.core.pipeline import StageContext, Transform
 from ichava_maintainer_toolkit.core.progress import file_progress
 from ichava_maintainer_toolkit.core.transforms.svg_filter import (
-    SvgPolicyViolation,
+    SvgPolicyViolationError,
     sanitise_bytes,
 )
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["Sanitise", "SvgPolicyViolation"]
+__all__ = ["Sanitise", "SvgPolicyViolationError"]
 
 
 class Sanitise(Transform):
@@ -87,7 +87,7 @@ class Sanitise(Transform):
                 advance()
 
         if self.strict and violations:
-            raise SvgPolicyViolation(
+            raise SvgPolicyViolationError(
                 f"{len(violations)} file(s) violate the SVG policy:\n  "
                 + "\n  ".join(violations[:20])
             )
