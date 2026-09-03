@@ -1,0 +1,84 @@
+{
+  "version": 2,
+
+  "_source": "phase-3-redesign.md §4.1, transcribed with its structure intact. JSONC comments became _comment keys because three runtimes parse this with strict JSON parsers; no value was changed, reordered or tidied.",
+
+  "_contract": "A POSITIVE specification derived from the engineering brief §1.3 fidelity contract: everything listed here MUST survive sanitisation, and anything stripping it is a bug, not security. The design rule is block by VALUE, not by name -- blunt tag bans over-block legitimate content and still miss real attacks.",
+
+  "_home": "core/resources/security/svg-policy.json. §4.1 says 'committed at the workspace root', which is not possible: the ichava workspace root is not a git repository, so a file there would be unversioned and would ship with nothing. It lives in ichava/core instead, the package every PHP consumer already depends on, and the JS and Python runtimes carry a synced copy checked by test.",
+
+  "allowedTags": [
+    "svg", "g", "defs", "symbol", "title", "desc", "metadata", "switch",
+    "path", "circle", "ellipse", "rect", "line", "polyline", "polygon",
+    "text", "tspan", "textPath",
+    "linearGradient", "radialGradient", "stop", "pattern", "mask", "clipPath",
+    "filter", "feBlend", "feColorMatrix", "feComponentTransfer", "feComposite",
+    "feConvolveMatrix", "feDiffuseLighting", "feDisplacementMap", "feDropShadow",
+    "feFlood", "feFuncA", "feFuncB", "feFuncG", "feFuncR", "feGaussianBlur",
+    "feMerge", "feMergeNode", "feMorphology", "feOffset", "feSpecularLighting",
+    "feTile", "feTurbulence",
+    "use"
+  ],
+  "_allowedTags_comment": {
+    "stop": "REQUIRED. A gradient element with no stops paints nothing. The shipped PHP config allowed linearGradient while stripping stop, and allow-listed the offset/stop-color ATTRIBUTES of an element it removed.",
+    "title": "REQUIRED. 6,966 bundled icons carry one; it is the accessible name.",
+    "use": "Fragment references ONLY -- see fragmentOnlyRefs."
+  },
+
+  "allowedAttributes": [
+    "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin",
+    "stroke-dasharray", "stroke-dashoffset", "stroke-miterlimit",
+    "fill-rule", "fill-opacity", "stroke-opacity", "opacity",
+    "transform", "transform-origin", "viewBox", "preserveAspectRatio",
+    "x", "y", "cx", "cy", "r", "rx", "ry", "d", "points", "width", "height",
+    "gradientUnits", "gradientTransform", "patternUnits", "patternTransform",
+    "offset", "stop-color", "stop-opacity",
+    "clip-path", "clip-rule", "mask", "filter",
+    "font-family", "font-size", "font-weight", "text-anchor",
+    "dominant-baseline", "letter-spacing",
+    "vector-effect", "paint-order", "shape-rendering",
+    "class", "id", "xmlns", "xmlns:xlink", "role",
+
+    "x1", "y1", "x2", "y2", "fx", "fy", "fr", "spreadMethod",
+    "clipPathUnits", "maskUnits", "maskContentUnits"
+  ],
+  "_allowedAttributes_addendum": "The last row is NOT in phase-3-redesign.md §4.1 and is added here deliberately. §4.1 (and brief §1.3 before it) list gradientUnits and gradientTransform but omit the coordinates a gradient is actually drawn with. A <linearGradient> without x1/y1/x2/y2 has no direction, a <radialGradient> without fx/fy/fr has no focal point, and clipPathUnits / maskUnits / maskContentUnits decide whether a clip or mask is interpreted in user space or object space -- get it wrong and the shape is clipped to nothing. The shipped PHP config had all eleven; adopting §4.1 verbatim would have REMOVED them and broken all 65 gradient icons plus every clip and mask. Caught by diffing the effective config before and after this file was wired in. This is the same single-archetype omission §1.1 describes, one level up: the spec was written from the fidelity contract, and the fidelity contract itself was incomplete.",
+
+  "allowedAttributePrefixes": ["aria-"],
+  "_allowedAttributePrefixes_comment": "Includes aria-labelledby and aria-describedby. Allowed by SHAPE rather than by list, so a newly standardised ARIA attribute cannot become an accessibility regression. 283 bundled icons carry aria-labelledby, and it is the line most often forgotten when ids are rewritten.",
+
+  "allowedValues": ["currentColor", "var(--token)", "url(#local-ref)"],
+  "_allowedValues_comment": "currentColor is theme inheritance -- without it there is no theming at all. var(--token) is the Tailwind v4 @theme integration. url(#local-ref) covers gradients, masks and filters.",
+
+  "fragmentOnlyRefs": {
+    "attributes": ["href", "xlink:href"],
+    "allow": "^#[A-Za-z_][\\w.:-]*$",
+    "_comment": "Fragments are inert: they cannot fetch, leak or execute. Blocking them destroys <use>, <textPath>, <mpath> and feImage for zero security benefit. Everything else -- absolute, protocol-relative, relative, data:, javascript:, blob:, filesystem: -- is blocked. 126 flag + 130 bundled + 5 metronic icons use <use>."
+  },
+
+  "styleAttribute": {
+    "allow": "declarations, CSS custom properties, url(#fragment)",
+    "block": ["url() with any non-fragment target", "expression(", "behavior:", "-moz-binding"],
+    "_comment": "REQUIRED. Sole paint source for 261 of 501 metronic icons -- only ONE metronic icon uses currentColor -- plus 2,976 bundled and 2 flag. url(#gradient) must work; url(https://…) is the CSS exfiltration vector.",
+    "_count_note": "§4.1 records 2,917 bundled here. The census measured 2,976 on 2026-09-02 (style-attribute paint source). The policy is unchanged either way; the figure is corrected rather than carried forward."
+  },
+
+  "forbiddenTags": [
+    "script", "foreignObject", "iframe", "object", "embed", "style",
+    "animate", "animateTransform", "set"
+  ],
+  "_forbiddenTags_comment": {
+    "style": "The style ELEMENT stays blocked, distinct from the style ATTRIBUTE which is widened. 54 files contain it, only 2 depend on it for paint. Blocking costs 2 icons and removes the CSS-exfiltration surface entirely; log those 2 as known-degraded.",
+    "foreignObject": "Never widens. 6 occurrences, all Illustrator metadata. It embeds arbitrary HTML inside SVG and is a standard sanitiser bypass.",
+    "animate": "SMIL stays blocked, for free: corpus count of animate/set/attributeName is ZERO. If it is ever enabled, blocking attributeName values of href/xlink:href/style/class/on* becomes mandatory -- that is the post-sanitiser attribute-rewrite vector, and it is frequently missed."
+  },
+
+  "denyAttributePrefixes": ["on"],
+  "stripDoctype": true,
+  "stripEntities": true,
+  "stripComments": true,
+  "blockImageNonFragmentHref": true,
+  "blockAnchorNonFragmentHref": true,
+  "blockCdataScript": true,
+  "_always_blocked_comment": "stripDoctype and stripEntities cover XXE and billion-laughs. <image> and <a> with a non-fragment href are blocked, which is why the 5 raster-embedded metronic brand logos render blank -- known-degraded by policy, OQ-018."
+}
