@@ -2,7 +2,13 @@
 
 All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
-## [0.1.1] - 2026-09-03
+## [0.1.1] - 2026-09-16
+
+### Added
+
+- `release.yml`, and third-party GitHub Actions pinned to the commit SHA of their latest
+  release. `codecov/codecov-action` moved 4 → 7 and `docker/login-action` 3 → 4; the workflow
+  already used the `files:` spelling v5 introduced, so no input changes were needed.
 
 ### Added
 
