@@ -37,12 +37,52 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Two attempts, 45s apart, and the release publishes either way.
+      #
+      # The Syft installer fetches its checksums from GitHub's release-asset CDN.
+      # On 2026-09-21 that answered 504 for ~20 minutes and failed this job four
+      # times before the publish step, leaving a pushed tag with no release behind
+      # it -- the drift the release table exists to catch, produced by the release
+      # machinery itself.
+      #
+      # So a missing SBOM must not fail the publish. The two states are not
+      # equally bad: a release missing an attachment is repaired by re-running
+      # this job, which re-attaches it, while a tag with no release persists
+      # silently until a person notices. The warning below is what makes the
+      # first state visible in the run rather than only in the absent asset.
+      #
+      # The retry covers a single transient 504, the common case. It does not try
+      # to cover a sustained outage -- no in-job backoff is worth twenty minutes.
       - name: Generate SBOM
+        id: sbom
+        continue-on-error: true
         uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
         with:
           format: cyclonedx-json
           output-file: ichava-maintainer-toolkit.cdx.json
           artifact-name: ichava-maintainer-toolkit.cdx.json
+
+      - name: Back off before retrying the SBOM
+        if: steps.sbom.outcome == 'failure'
+        run: sleep 45
+
+      - name: Generate SBOM (retry)
+        id: sbom_retry
+        if: steps.sbom.outcome == 'failure'
+        continue-on-error: true
+        uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+        with:
+          format: cyclonedx-json
+          output-file: ichava-maintainer-toolkit.cdx.json
+          artifact-name: ichava-maintainer-toolkit.cdx.json
+
+      - name: Note that the release ships without an SBOM
+        if: steps.sbom.outcome == 'failure' && steps.sbom_retry.outcome == 'failure'
+        run: |
+          echo "::warning title=SBOM missing::Syft could not be installed after two"
+          echo "::warning::attempts, so this release publishes without its SBOM asset."
+          echo "::warning::Re-run this workflow once the download recovers to attach it."
+
 
       - name: Extract the changelog section
         id: changelog
@@ -79,3 +119,6 @@ jobs:
           body: ${{ steps.changelog.outputs.body }}
           generate_release_notes: true
           files: ichava-maintainer-toolkit.cdx.json
+          # Explicit, though it is the action's default: a missing SBOM must not
+          # fail the publish, so it must not rest on a default a reader has to know.
+          fail_on_unmatched_files: false
