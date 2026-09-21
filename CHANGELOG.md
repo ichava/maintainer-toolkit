@@ -4,6 +4,53 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ## [Unreleased]
 
+### Added
+
+- **`.scripts/wt` — one git worktree per session, over one object store.** This estate is
+  thirteen repositories and more than one agent session works in them at once. A working tree has
+  a single HEAD and a single set of files, so `git checkout`, `rebase`, `reset` and `rm` in one
+  session act on another's work.
+
+  Four incidents in one afternoon came from that, and every mitigation reached for was
+  per-incident: a half-finished `stubs/` move read as residue, an `rm`/`checkout` race that made
+  a commit record eight reference edits and zero file moves, a `git rebase` that rewrote another
+  session's branch because `rebase` takes no branch argument, and a conflict resolution filed
+  under the wrong changelog heading.
+
+  ```bash
+  export WT_SESSION=<name-the-work>
+  .scripts/wt icon-sets-flag       # create or reuse, prints the path
+  .scripts/wt --list               # every worktree in the estate, by session
+  .scripts/wt --remove <repo>
+  ```
+
+  Commits, branches, tags and the object store stay shared. A worktree's `.git` is 4 KB against
+  the repository's 3.9 MB.
+
+  **Four hazards are encoded rather than left to memory:**
+
+  - **Detached at `origin/main` by default.** A named branch cannot be checked out in two
+    worktrees at once, and taking one hostage from the main checkout is the surprise this exists
+    to remove.
+  - **It creates siblings a test reads off disk.** `wt icon-sets-package-scaffolder` also creates
+    `icon-sets-flag`, because `StubEstateParityTest` resolves
+    `dirname(__DIR__, 3) . '/icon-sets-flag'` — a lone scaffolder worktree skips 8 parity cases
+    and stays green.
+  - **`vendor/` and `node_modules/` are gitignored, so they are per-worktree**, and it says so on
+    creation. Roughly 128 MB of vendor per PHP package and 300–360 MB of node_modules for
+    `browser` and `react-browser`, so make worktrees for what you are touching.
+  - **The estate root is found by walking up** for a directory holding `packages/` and `demos/`,
+    not by counting levels from the script. `.scripts/sample-svg-archetypes.mjs` in
+    `react-browser` hardcoded an absolute path into one machine's home directory and was broken
+    three separate ways by a restructure nobody connected to it.
+
+  > **In a worktree, `.git` is a file rather than a directory**, so a checkout test written as
+  > `is_dir('.git')` answers false there. `StubEstateParityTest` already uses `file_exists()` and
+  > is correct — I reimplemented that check with `is_dir()` in a throwaway probe and was one step
+  > from filing a defect against working code. Read the predicate the code uses.
+
+## [Unreleased]
+
 ### Changed
 
 - **Every pack slug moved to the `icon-sets-` names, and the config *filenames* had to move with
