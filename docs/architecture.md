@@ -1,5 +1,3 @@
-[← Package README](../README.md#documentation)
-
 # Architecture
 
 *Explanation.*

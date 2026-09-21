@@ -1,5 +1,3 @@
-[← Documentation index](../README.md#documentation)
-
 # Icon-pack maintainer sync
 
 *How we (the package maintainers) keep vendored SVG assets in step
