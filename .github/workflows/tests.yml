@@ -103,6 +103,7 @@ jobs:
       - name: Check CHANGELOG section order
         run: |
           python3 - CHANGELOG.md <<'PYEOF'
+          import collections
           import re, sys
 
           path = sys.argv[1]
@@ -120,6 +121,18 @@ jobs:
               return tuple(nums + [0] * (3 - len(nums)))
 
           problems = []
+          # Duplicates first. Ordering says nothing about how many [Unreleased]
+          # headings there are, and release.yml extracts exactly one section by
+          # version heading: a second [Unreleased] means the next release
+          # publishes part of its notes and strands the rest under a heading no
+          # version will ever match. Four had accumulated here before anyone
+          # looked, and three other repos in the ecosystem had the same.
+          seen = [h for h, n in collections.Counter(heads).items() if n > 1]
+          if seen:
+              problems.append(
+                  'duplicate section headings: ' + ', '.join(f'[{h}]' for h in seen)
+                  + '. Each branch must add to the existing section, not prepend its own.')
+
           if 'Unreleased' in heads and heads[0] != 'Unreleased':
               problems.append(
                   f'[Unreleased] is section {heads.index("Unreleased") + 1}, not the first. '
