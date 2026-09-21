@@ -6,6 +6,30 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **`internal/core/pipeline`, `internal/core/checker` and `internal/core/httpx`.** The engine is
+  complete and has no third-party dependencies.
+
+  `pipeline` makes Python's Source/Transform/Sink real types rather than the empty marker
+  subclasses they were, so passing a sink where a source belongs no longer compiles. Sink order
+  stays load-bearing and is documented at the method: filesystem, then version stamp, then git
+  branch, so the version that gets committed is the version that shipped.
+
+  `checker` settles an ordering question the Python had wrong. `core/checker.py` opens by
+  declaring it "Mirrors PHP IconPackUpdateChecker exactly. The two implementations MUST agree" --
+  and they do not. PHP calls `version_compare`; Python builds a tuple of mixed ints and strings.
+  For `3.46.0` against `3.46.0-rc1` PHP reports not-stale and Python reports stale, so a
+  scheduled sync would have proposed replacing a stable release with a pre-release of itself;
+  Python's version also raises `TypeError` outright on a mixed int/string part. **This port
+  follows PHP**, which is the declared reference and the correct one, and pins it by running the
+  real `php -r 'version_compare(...)'` over 31 real and adversarial pairs -- they agree on every
+  one. `TrimVersion` keeps the character-set trim both implementations share rather than
+  correcting it here, because that would leave this port out of step with both.
+
+  `httpx` keeps tenacity's four attempts and exponential bounds, and narrows *which* failures
+  retry: Python retried every non-2xx, so a 404 cost four attempts and three backoffs to report
+  what the first response already said. Downloads stay idempotent by existence, and a failed one
+  now leaves no truncated file for the next run to mistake for a cache hit.
+
 - **A Go port begins, alongside the Python rather than replacing it.** The module lives in `src/`
   per the Go layout in `/opensource/CLAUDE.md`, so its import path is
   `github.com/ichava/maintainer-toolkit/src` and a release will need a second `src/vX.Y.Z` tag
