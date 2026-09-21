@@ -6,6 +6,39 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **`internal/core/svg` -- the SVG policy layer, the riskiest part of the port.** lxml is a real
+  DOM and Go's `encoding/xml` is a streaming decoder, so the two had to be made to agree rather
+  than assumed to. It is verified by running **both implementations over all 17,812 vendored
+  icons** in the four pack checkouts and requiring identical answers for what the policy removed
+  and what structure survived: **zero mismatches**, in ten seconds.
+
+  That gate earned itself immediately. A fixture suite would have passed while two real defects
+  sat in the port:
+
+  - **261 metronic flags declare `encoding="iso-8859-1"`.** Go's decoder refuses any encoding it
+    has no table for; lxml has them all. There is now a charset reader for Latin-1 -- the only
+    non-UTF-8 encoding the corpus contains, measured -- and an explicit error for anything else,
+    because silently decoding an unknown encoding as Latin-1 mangles multi-byte characters into
+    pairs of accented ones and the damage is invisible until someone renders a title.
+  - **`styleAttribute` in the policy is an object, not a boolean.** Python reads it with a
+    truthiness test. Typing it as a Go `bool` made the whole policy fail to load -- and had that
+    failure been swallowed, `style` would have dropped off the merged allow-list, removing the
+    sole paint source from 261 of metronic's 501 icons. That is the exact trap the policy file's
+    own comments warn about.
+
+  One Go-specific hazard has no Python counterpart and is pinned by its own test: lxml keeps
+  namespace declarations out of `el.attrib` entirely, while Go's decoder hands them over as
+  ordinary attributes -- and `xmlns` is not on the allow-list, so filtering them would have
+  stripped the SVG namespace from every icon in the estate.
+
+  The vendored policy is registered in `.scripts/sync-svg-policy.mjs` as a fifth consumer and
+  pinned by digest here, so the Go copy is covered by the same cross-repo gate as the other four.
+
+  Worth a separate decision, not taken here: the policy allows all 22 `fe*` filter tags and none
+  of their attributes, so `<feGaussianBlur stdDeviation="2"/>` survives as `<feGaussianBlur/>`
+  and blurs by zero. Both implementations agree, so it is the policy's behaviour rather than a
+  port defect -- but the canonical file lives in core and four runtimes read it.
+
 - **The CLI and the TUI, over one engine.** `cmd/imt` builds a cobra tree with all six commands
   the Python declared -- `list-packs`, `check`, `sync`, `recipe`, `menu`, `version` -- and the
   exit codes they are consumed by: **1** when `check` finds anything stale, **1** when a `sync`

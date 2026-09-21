@@ -31,6 +31,10 @@ const CONSUMERS = [
   'browser/resources/assets/scripts/ichava-ts/security/svg-policy.json',
   'react-browser/src/core/svg-policy.json',
   'maintainer-toolkit/src/ichava_maintainer_toolkit/core/transforms/svg-policy.json',
+  // The Go port embeds its own copy: //go:embed cannot reach outside the
+  // package directory, so it cannot share the Python one. Both entries stay
+  // until the Python is deleted at the cutover.
+  'maintainer-toolkit/src/internal/core/svg/svg-policy.json',
 ];
 
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
