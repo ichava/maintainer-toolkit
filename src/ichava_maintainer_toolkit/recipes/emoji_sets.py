@@ -45,7 +45,7 @@ def build(
     ``unicode_version`` is NOT derived from ``twemoji_version`` and the two move
     independently. This defaulted to "17.0" while Unicode had published nothing
     past 16.0, so every run died on a 404 fetching ``emoji-test.txt`` -- which is
-    why ``ichava/emoji-sets`` shipped a tagged package with zero SVGs (`V4`). The
+    why ``ichava/icon-sets-emoji`` shipped a tagged package with zero SVGs (`V4`). The
     CLI does not pass this argument, so the default is the effective value:
     check https://unicode.org/Public/emoji/ before bumping it.
 

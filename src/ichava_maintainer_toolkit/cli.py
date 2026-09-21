@@ -231,12 +231,12 @@ def _run_recipe(cfg: PackConfig, *, version: str, dry_run: bool) -> typing.Any:
 
     Dispatcher table (kept tiny so adding a pack is one branch):
 
-        cfg.name == "emoji-sets"     -> recipes.build_emoji_sets (multi-source)
+        cfg.name == "icon-sets-emoji"     -> recipes.build_emoji_sets (multi-source)
         cfg.source.type == "npm"     -> recipes.build_simple_npm (~80% of packs)
-        cfg.name == "bundled-icons"  -> NotImplementedError, see CHANGELOG
+        cfg.name == "icon-sets-bundled"  -> NotImplementedError, see CHANGELOG
         anything else                -> NotImplementedError, write a recipe
     """
-    if cfg.name == "emoji-sets":
+    if cfg.name == "icon-sets-emoji":
         pipelines = recipes.build_emoji_sets(cfg, twemoji_version=version, dry_run=dry_run)
         last_result = None
         for p in pipelines:
@@ -248,7 +248,7 @@ def _run_recipe(cfg: PackConfig, *, version: str, dry_run: bool) -> typing.Any:
     if cfg.source.type == "npm":
         return recipes.build_simple_npm(cfg, version=version, dry_run=dry_run).run()
 
-    if cfg.name == "bundled-icons":
+    if cfg.name == "icon-sets-bundled":
         raise typer.BadParameter(
             "bundled-icons recipe pending: this pack aggregates 70+ upstream Iconify sets "
             "via @iconify/json. Until "

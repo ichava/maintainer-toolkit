@@ -37,7 +37,7 @@ def make_pack(tmp_path, *, toolkit_version="3.0.0", vendored=None):
         )
     return PackConfig(
         name="tabler-icons",
-        pack="ichava/tabler-icons",
+        pack="ichava/icon-sets-tabler",
         pack_root=str(tmp_path),
         current_version=toolkit_version,
         version_check_url="https://registry.npmjs.org/@tabler/icons/latest",

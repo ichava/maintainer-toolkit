@@ -1,7 +1,7 @@
 {
-  "name": "tabler-icons",
-  "pack": "ichava/tabler-icons",
-  "pack_root": "/work/tabler-icons",
+  "name": "icon-sets-tabler",
+  "pack": "ichava/icon-sets-tabler",
+  "pack_root": "/work/icon-sets-tabler",
   "current_version": "3.46.0",
   "version_check_url": "https://registry.npmjs.org/@tabler/icons/latest",
   "source": {

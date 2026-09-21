@@ -11,7 +11,7 @@ upstream registry.
 ## The registry
 
 ```json
-{ "packs": ["tabler-icons", "flag-icons", "bundled-icons", "emoji-sets"] }
+{ "packs": ["icon-sets-tabler", "icon-sets-flag", "icon-sets-bundled", "icon-sets-emoji"] }
 ```
 
 Each slug maps to `config/<slug>.json`.
@@ -21,7 +21,7 @@ Each slug maps to `config/<slug>.json`.
 | Key | Meaning |
 |---|---|
 | `name` | pack slug; must match the filename |
-| `pack` | Composer package name, e.g. `ichava/tabler-icons` |
+| `pack` | Composer package name, e.g. `ichava/icon-sets-tabler` |
 | `pack_root` | path to the pack repo, absolute or relative to the config dir |
 | `version_check_url` | the URL polled to discover the latest upstream version |
 | `source` | how to fetch: `npm`, `github-archive`, `github-tag`, `github-release`, `url`, `script` |

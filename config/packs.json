@@ -1,8 +1,8 @@
 {
   "packs": [
-    "tabler-icons",
-    "flag-icons",
-    "bundled-icons",
-    "emoji-sets"
+    "icon-sets-tabler",
+    "icon-sets-flag",
+    "icon-sets-bundled",
+    "icon-sets-emoji"
   ]
 }
