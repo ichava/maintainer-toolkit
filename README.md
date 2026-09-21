@@ -10,7 +10,7 @@ couldn't persist anything because `vendor/` is regenerated on every
 `composer install`).
 
 End-user side of the same story: see
-[`ichava/documentation/icon-pack-upstream-tracking.md`](https://github.com/ichava/documentation/blob/main/icon-pack-upstream-tracking.md).
+[`ichava/documentation/icon-pack-upstream-tracking.md`](docs/upstream-tracking.md).
 This repo is the maintainer side.
 
 ## Install
