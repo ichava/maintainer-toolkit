@@ -2,6 +2,55 @@
 
 All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **A Go port begins, alongside the Python rather than replacing it.** The module lives in `src/`
+  per the Go layout in `/opensource/CLAUDE.md`, so its import path is
+  `github.com/ichava/maintainer-toolkit/src` and a release will need a second `src/vX.Y.Z` tag
+  beside `vX.Y.Z` -- Go resolves a subdirectory module through no other ref. Python is still the
+  Docker `ENTRYPOINT` and still what the five packs' `sync-upstream.yml` runs every Monday; that
+  does not change until the Go side has done a real sync on a real pack.
+
+  First package is `internal/core/config`, because the config directory is a bind-mounted volume
+  in production and therefore an external interface: it has to read the four shipped
+  `config/*.json` files unchanged, comment keys and all.
+
+  It is verified against Python rather than against fixtures. A differential run over the four
+  real configs and the real pack repos produces **identical** output for every field, including
+  the V49 convergence that matters most -- `icon-sets-tabler` resolves `3.47.0` from the pack
+  repo while this repository's config still says `3.46.0`, and both implementations agree that
+  the pack wins.
+
+  Three details are pinned by tests because each is a way the port could have gone quietly wrong:
+
+  - **The writer never creates a key.** `icon-sets-bundled` ships no `package.upstream_version`,
+    and `package.version` is the pack's own release number, not the upstream one. Only an
+    existing leaf that already differs is rewritten.
+  - **The writer preserves the rest of the document byte for byte.** Go map iteration has no
+    order, so the obvious unmarshal-modify-marshal would reorder every key and bury a one-line
+    version bump in a whole-file diff on the sync PR. The setter splices the value's byte range
+    instead, which is why this package has no JSON dependency.
+  - **Unknown keys survive inside `source`.** The checker reads `version_field` out of them, and
+    both url-typed packs depend on it. The pack schema itself stays closed, so a typo at the top
+    level still fails loudly.
+
+  The module has **no third-party dependencies**.
+
+### Fixed
+
+- **The README's link label named the old central docs repo.** The URL was already correct —
+  `docs/upstream-tracking.md`, in this repository — while the text beside it still read
+  `ichava/documentation/icon-pack-upstream-tracking.md`. The label now names the page the link
+  opens.
+
+  **No link checker sees this class.** The label is a code span, not a target, so the link
+  resolves and the text next to it is wrong — `lychee` and every `](...)` sweep pass it. Found
+  by grepping for `` `…documentation/….md` `` rather than for links, after the estate-wide link
+  scan came back at zero.
+
+## [Unreleased]
 ## [0.1.3] - 2026-09-22
 
 ### Added
