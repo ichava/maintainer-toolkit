@@ -4,20 +4,6 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ## [Unreleased]
 
-### Fixed
-
-- **The README's link label named the old central docs repo.** The URL was already correct —
-  `docs/upstream-tracking.md`, in this repository — while the text beside it still read
-  `ichava/documentation/icon-pack-upstream-tracking.md`. The label now names the page the link
-  opens.
-
-  **No link checker sees this class.** The label is a code span, not a target, so the link
-  resolves and the text next to it is wrong — `lychee` and every `](...)` sweep pass it. Found
-  by grepping for `` `…documentation/….md` `` rather than for links, after the estate-wide link
-  scan came back at zero.
-
-## [Unreleased]
-
 ### Added
 
 - **`.scripts/wt` — one git worktree per session, over one object store.** This estate is
@@ -63,7 +49,19 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   > is correct — I reimplemented that check with `is_dir()` in a throwaway probe and was one step
   > from filing a defect against working code. Read the predicate the code uses.
 
-## [Unreleased]
+
+- **`actionlint` runs on every pull request.** Nothing validated the workflow files at all:
+  `release.yml` triggers only on `push: tags`, so a broken workflow was first observed as a
+  release that refused to start — after the decision to release had been made.
+
+  A YAML parse is not a substitute, and that is the sharp part. `yaml.safe_load` accepts a
+  duplicate key and silently keeps the last one, so a double-applied patch that left
+  `continue-on-error:` twice on a single step validated clean and would have failed only at tag
+  time. `actionlint` rejects what Actions rejects.
+
+  Checked against the defect rather than assumed: injecting that duplicate key, a typo'd step
+  key, and an `if:` referencing a property that does not exist are all caught, while
+  `yaml.safe_load` still parses the first of them without complaint.
 
 ### Changed
 
@@ -102,22 +100,18 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   `.scripts/migration/census*.json` keeps the old slugs: it is a dated measurement of the tree as
   it was, not configuration.
 
-### Added
-
-- **`actionlint` runs on every pull request.** Nothing validated the workflow files at all:
-  `release.yml` triggers only on `push: tags`, so a broken workflow was first observed as a
-  release that refused to start — after the decision to release had been made.
-
-  A YAML parse is not a substitute, and that is the sharp part. `yaml.safe_load` accepts a
-  duplicate key and silently keeps the last one, so a double-applied patch that left
-  `continue-on-error:` twice on a single step validated clean and would have failed only at tag
-  time. `actionlint` rejects what Actions rejects.
-
-  Checked against the defect rather than assumed: injecting that duplicate key, a typo'd step
-  key, and an `if:` referencing a property that does not exist are all caught, while
-  `yaml.safe_load` still parses the first of them without complaint.
-
 ### Fixed
+
+- **The README's link label named the old central docs repo.** The URL was already correct —
+  `docs/upstream-tracking.md`, in this repository — while the text beside it still read
+  `ichava/documentation/icon-pack-upstream-tracking.md`. The label now names the page the link
+  opens.
+
+  **No link checker sees this class.** The label is a code span, not a target, so the link
+  resolves and the text next to it is wrong — `lychee` and every `](...)` sweep pass it. Found
+  by grepping for `` `…documentation/….md` `` rather than for links, after the estate-wide link
+  scan came back at zero.
+
 
 - **A failed SBOM download no longer takes the whole release down.** `release.yml` generates the
   SBOM before it publishes, and the Syft installer fetches its checksums from GitHub's
