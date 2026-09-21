@@ -2,6 +2,15 @@
 
 All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] - 2026-09-21
+
+### Changed
+
+- **`codecov/codecov-action` pinned to `303a32d` (v7.1.1).** Third-party actions are pinned to
+  the commit SHA of their latest release, with the version in a trailing comment; Dependabot
+  moves the SHA and the comment together. The pin exists to stop a mutable tag moving under us,
+  not to freeze a version, so it tracks latest rather than being held back.
+
 ## [0.1.1] - 2026-09-16
 
 ### Added
