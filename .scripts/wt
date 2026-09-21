@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# Per-session git worktrees for the ichava estate.
+#
+# The problem it solves: this tree holds thirteen independent repositories and
+# more than one Claude session works in them at once. A working tree has one
+# HEAD and one set of files, so `git checkout`, `rebase`, `reset` and `rm` in
+# one session act on the other's work. That produced four incidents in one
+# afternoon -- a half-finished move read as residue, an `rm`/`checkout` race, a
+# rebase that rewrote someone else's branch, and a commit that captured a tree
+# its author had already verified.
+#
+# A worktree gives each session its own HEAD and its own files over the same
+# object store. Commits, branches and tags stay shared; nothing is duplicated
+# in .git.
+#
+#   bin/wt <repo> [branch]     create or reuse a worktree, print its path
+#   bin/wt --list              every worktree in the estate, by session
+#   bin/wt --remove <repo>     remove this session's worktree for <repo>
+#   bin/wt --prune             drop registrations whose directories are gone
+#
+# Session identity comes from $WT_SESSION, falling back to a stable id derived
+# from the tty. Set it to something meaningful:
+#
+#   export WT_SESSION=rebrand
+#
+set -euo pipefail
+
+# Walk up for the estate root rather than assuming a depth from this file.
+# `sample-svg-archetypes.mjs` hardcoded an absolute path into one machine's home
+# directory and was broken three ways by a restructure nobody connected to it.
+find_root() {
+  local d; d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  while [ "$d" != "/" ]; do
+    [ -d "$d/packages" ] && [ -d "$d/demos" ] && { printf '%s' "$d"; return 0; }
+    d="$(dirname "$d")"
+  done
+  return 1
+}
+ROOT="$(find_root)" || { echo "wt: no estate root above $(pwd) (looked for a dir with packages/ and demos/)" >&2; exit 1; }
+WORKTREES="$ROOT/.worktrees"
+SESSION="${WT_SESSION:-$(basename "$(tty 2>/dev/null || echo default)")}"
+
+die() { printf 'wt: %s\n' "$*" >&2; exit 1; }
+
+# Packs whose test suites read a sibling package off disk. A worktree moves the
+# package, so the sibling has to move with it or the guard silently skips --
+# which is the failure mode the guard exists to prevent.
+siblings_for() {
+  case "$1" in
+    icon-sets-package-scaffolder) echo "icon-sets-flag" ;;
+    *) echo "" ;;
+  esac
+}
+
+repo_path() { printf '%s/packages/%s' "$ROOT" "$1"; }
+
+add_one() {
+  local repo="$1" branch="${2:-}" src dest
+  src="$(repo_path "$repo")"
+  [ -d "$src/.git" ] || die "no repository at packages/$repo"
+  dest="$WORKTREES/$SESSION/$repo"
+
+  if [ -d "$dest" ]; then printf '%s\n' "$dest"; return 0; fi
+
+  mkdir -p "$(dirname "$dest")"
+  git -C "$src" fetch origin --quiet 2>/dev/null || true
+
+  if [ -n "$branch" ]; then
+    if git -C "$src" show-ref --quiet --verify "refs/heads/$branch"; then
+      git -C "$src" worktree add "$dest" "$branch" >&2
+    else
+      git -C "$src" worktree add -b "$branch" "$dest" refs/remotes/origin/main >&2
+    fi
+  else
+    # Detached at origin/main. A named branch checked out here could not also be
+    # checked out in the main tree, and silently taking it hostage is the class
+    # of surprise this script exists to remove.
+    git -C "$src" worktree add --detach "$dest" refs/remotes/origin/main >&2
+  fi
+  printf '%s\n' "$dest"
+}
+
+cmd_add() {
+  local repo="${1:-}" branch="${2:-}"
+  [ -n "$repo" ] || die "usage: wt <repo> [branch]"
+  local path; path="$(add_one "$repo" "$branch")"
+
+  for sib in $(siblings_for "$repo"); do
+    add_one "$sib" "" >/dev/null
+    printf 'wt: also created %s -- %s reads it off disk; without it 8 parity cases skip green\n' \
+      "$sib" "$repo" >&2
+  done
+
+  # Ignored installs are per-worktree. Saying so beats a confusing failure.
+  [ -f "$path/composer.json" ] && [ ! -d "$path/vendor" ] && \
+    printf 'wt: composer install needed here (vendor/ is not shared between worktrees)\n' >&2
+  [ -f "$path/package.json" ] && [ ! -d "$path/node_modules" ] && \
+    printf 'wt: npm install needed here (node_modules/ is not shared between worktrees)\n' >&2
+
+  printf '%s\n' "$path"
+}
+
+cmd_list() {
+  local any=0
+  for s in "$WORKTREES"/*/; do
+    [ -d "$s" ] && any=1
+  done
+  [ "$any" = 1 ] || { echo "no worktrees"; return 0; }
+  for s in "$WORKTREES"/*/; do
+    [ -d "$s" ] || continue
+    printf '%s\n' "$(basename "$s")"
+    for w in "$s"*/; do
+      [ -d "$w" ] || continue
+      printf '  %-30s %s\n' "$(basename "$w")" \
+        "$(git -C "$w" rev-parse --abbrev-ref HEAD 2>/dev/null || echo '?')"
+    done
+  done
+}
+
+cmd_remove() {
+  local repo="${1:-}"; [ -n "$repo" ] || die "usage: wt --remove <repo>"
+  local dest="$WORKTREES/$SESSION/$repo"
+  [ -d "$dest" ] || die "no worktree at $dest"
+  git -C "$(repo_path "$repo")" worktree remove "$dest"
+  printf 'removed %s\n' "$dest"
+}
+
+cmd_prune() { for d in "$ROOT"/packages/*/; do git -C "$d" worktree prune; done; echo pruned; }
+
+case "${1:-}" in
+  --list)   cmd_list ;;
+  --remove) shift; cmd_remove "$@" ;;
+  --prune)  cmd_prune ;;
+  ''|-h|--help) awk 'NR>1 && /^#/ {sub(/^# ?/,""); print; next} NR>1 && !/^#/ {exit}' "${BASH_SOURCE[0]}" ;;
+  *)        cmd_add "$@" ;;
+esac
