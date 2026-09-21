@@ -2,6 +2,29 @@
 
 All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- **A failed SBOM download no longer takes the whole release down.** `release.yml` generates the
+  SBOM before it publishes, and the Syft installer fetches its checksums from GitHub's
+  release-asset CDN. On 2026-09-21 that answered `504` for about twenty minutes, failing the job
+  four times *before* the publish step — so the tag existed with no release behind it, which is
+  the drift the release table exists to catch, produced by the release machinery itself.
+
+  Two changes. The step now retries once after 45 seconds, which covers a single transient `504`
+  — the common case. And a second failure no longer fails the job: the release publishes without
+  the asset and emits a `::warning::` naming the re-run.
+
+  **The two failure states are not equally bad, and that asymmetry is the whole design.** A
+  release missing an attachment is repaired by re-running this workflow, which re-attaches it. A
+  tag with no release persists silently until a person notices. Preferring the recoverable one
+  is worth the loss of "every release always carries an SBOM" as an absolute.
+
+  `fail_on_unmatched_files: false` is now stated on the publish step. It is already the action's
+  default, but the point of this change is that a missing SBOM must not fail the publish, so it
+  should not rest on a default a future reader has to know.
+
 ## [0.1.2] - 2026-09-21
 
 ### Changed
