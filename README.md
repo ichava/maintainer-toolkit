@@ -60,7 +60,7 @@ A pack config:
 ```json
 {
   "name": "tabler-icons",
-  "pack": "ichava/tabler-icons",
+  "pack": "ichava/icon-sets-tabler",
   "pack_root": "/work/tabler-icons",
   "current_version": "3.0.0",
   "version_check_url": "https://registry.npmjs.org/@tabler/icons/latest",

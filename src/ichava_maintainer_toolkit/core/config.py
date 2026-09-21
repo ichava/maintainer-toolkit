@@ -91,7 +91,7 @@ class PackConfig(BaseModel):
     """Human-readable pack name (e.g. "twemoji")."""
 
     pack: str
-    """Composer package name (e.g. "ichava/emoji-sets")."""
+    """Composer package name (e.g. "ichava/icon-sets-emoji")."""
 
     pack_root: str
     """Path to the pack repo, relative to the config dir or absolute."""

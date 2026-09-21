@@ -4,6 +4,43 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ## [Unreleased]
 
+### Changed
+
+- **Every pack slug moved to the `icon-sets-` names, and the config *filenames* had to move with
+  them.** `load_pack(slug)` reads `config/{slug}.json`, and each pack's `sync-upstream.yml` passes
+  `--pack="$PACK_SLUG"` with `PACK_SLUG: ${{ github.event.repository.name }}`. The repositories
+  were renamed, so that variable now reads `icon-sets-flag` where the file was `flag-icons.json`.
+
+  **Nothing would have reported this until a cron fired.** `sync-upstream.yml` runs on a
+  schedule, in a repository nobody is watching, and the failure would have been
+  `config not found` long after the rename that caused it. The four files, their `name`, `pack`
+  and `pack_root` fields, and `config/packs.json` all move together.
+
+  `pack_root` is `/work/<slug>` because the workflow mounts `-v "$PWD/..:/work"` and the runner
+  checks a repository out at a directory named after it, so that path is the repository name too.
+
+- **`cli.py` dispatches recipes on `cfg.name`**, so `emoji-sets` and `bundled-icons` moved there
+  as well. A config rename without this leaves the emoji recipe unreachable and the pack falling
+  through to the generic path.
+
+  | Was | Is |
+  |---|---|
+  | `config/tabler-icons.json` | `config/icon-sets-tabler.json` |
+  | `config/flag-icons.json` | `config/icon-sets-flag.json` |
+  | `config/bundled-icons.json` | `config/icon-sets-bundled.json` |
+  | `config/emoji-sets.json` | `config/icon-sets-emoji.json` |
+
+  **The upstream fields are deliberately unchanged**, and this is the trap the rename exists
+  around: `source.package: "flag-icons"` and
+  `version_check_url: "https://registry.npmjs.org/flag-icons/latest"` name **lipis/flag-icons on
+  npm**, not our pack. Same for `@tabler/icons`, `@twemoji/svg` and `@iconify/json`. A blanket
+  slug replace points the update checker at a package that does not exist and reports
+  `unreachable` rather than failing. Each edited file is asserted to carry the same upstream
+  references afterwards as before.
+
+  `.scripts/migration/census*.json` keeps the old slugs: it is a dated measurement of the tree as
+  it was, not configuration.
+
 ### Added
 
 - **`actionlint` runs on every pull request.** Nothing validated the workflow files at all:
