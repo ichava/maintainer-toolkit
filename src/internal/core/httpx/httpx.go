@@ -8,6 +8,8 @@ package httpx
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -15,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
@@ -56,7 +59,64 @@ func New() *Client {
 }
 
 func (c *Client) clientFor(timeout time.Duration) *http.Client {
-	return &http.Client{Timeout: timeout, Transport: c.Transport}
+	transport := c.Transport
+	if transport == nil {
+		transport = defaultTransport()
+	}
+	return &http.Client{Timeout: timeout, Transport: transport}
+}
+
+var (
+	transportOnce sync.Once
+	transportVal  http.RoundTripper
+)
+
+// defaultTransport is http.DefaultTransport, with SSL_CERT_FILE honoured.
+//
+// Two things here are easy to get wrong and both were, in this order.
+//
+// Go honours SSL_CERT_FILE on Linux but not on macOS, where crypto/x509 uses
+// the platform verifier and x509.SystemCertPool() comes back with zero
+// subjects however the variable is set. That is fine in production -- the
+// Docker image is Linux -- but it stops the tool working on a developer
+// machine behind a TLS-intercepting proxy, which is an ordinary corporate
+// setup. Loading the bundle into an explicit pool covers both.
+//
+// The transport is *cloned* from http.DefaultTransport rather than built
+// fresh. A hand-rolled &http.Transport{TLSClientConfig: …} silently drops
+// Proxy: http.ProxyFromEnvironment along with the connection-pool and timeout
+// defaults -- and losing the proxy turns every request into a direct dial,
+// which fails as "no such host" and reads like DNS rather than like the
+// configuration mistake it is.
+func defaultTransport() http.RoundTripper {
+	transportOnce.Do(func() {
+		transportVal = http.DefaultTransport
+
+		path := os.Getenv("SSL_CERT_FILE")
+		if path == "" {
+			return
+		}
+		pem, err := os.ReadFile(path)
+		if err != nil {
+			return
+		}
+		pool := x509.NewCertPool()
+		if !pool.AppendCertsFromPEM(pem) {
+			return
+		}
+
+		base, ok := http.DefaultTransport.(*http.Transport)
+		if !ok {
+			return
+		}
+		cloned := base.Clone()
+		if cloned.TLSClientConfig == nil {
+			cloned.TLSClientConfig = &tls.Config{MinVersion: tls.VersionTLS12}
+		}
+		cloned.TLSClientConfig.RootCAs = pool
+		transportVal = cloned
+	})
+	return transportVal
 }
 
 func (c *Client) sleep(d time.Duration) {

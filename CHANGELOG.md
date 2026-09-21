@@ -6,6 +6,24 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **`SSL_CERT_FILE` is honoured, and the transport keeps its proxy.** Go reads that variable on
+  Linux but not on macOS, where `crypto/x509` uses the platform verifier and
+  `x509.SystemCertPool()` returns **zero subjects** however the variable is set. That costs
+  nothing in production -- the image is Linux -- but it stops the tool working on a developer
+  machine behind a TLS-intercepting proxy, which is an ordinary corporate setup and is also the
+  sandbox this was built in. The bundle is now loaded into an explicit pool.
+
+  The transport is *cloned* from `http.DefaultTransport` rather than built fresh, and that is the
+  load-bearing half. A hand-rolled `&http.Transport{TLSClientConfig: …}` silently drops
+  `Proxy: http.ProxyFromEnvironment`: every request then dials directly and fails as
+  `no such host`, which reads like DNS rather than like the configuration mistake it is. Pinned
+  by a test that asserts a bare `&http.Transport{}` has no Proxy and a clone does.
+
+  With it, `check` runs against the live registries for the first time: tabler 3.46.0 behind
+  3.47.0, flag 7.0.0 behind 7.5.0, bundled 2.2.0 behind 2.2.531, emoji current, exit 1. The
+  release URLs, the staleness comparison and the CI exit contract are now verified against real
+  registry responses rather than stubs.
+
 - **`imt bundled audit` -- identifies, by measurement, where each vendored set in the aggregator
   pack came from.** It fetches candidate npm packages, scores every directory in them against the
   committed icons, and believes nothing on the strength of a name: a candidate is accepted only

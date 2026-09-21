@@ -255,3 +255,50 @@ func TestDownloadRetriesA500(t *testing.T) {
 		t.Errorf("hits = %d, want 2", tr.hits)
 	}
 }
+
+// TestDefaultTransportKeepsProxySupport is the regression for the mistake that
+// cost the longest here: a hand-rolled &http.Transport{TLSClientConfig: …}
+// silently drops Proxy: http.ProxyFromEnvironment, and every request then dials
+// directly and fails as "no such host" -- which reads like DNS rather than like
+// the configuration error it is. Cloning http.DefaultTransport keeps it.
+func TestDefaultTransportKeepsProxySupport(t *testing.T) {
+	dir := t.TempDir()
+	bundle := filepath.Join(dir, "cert.pem")
+
+	// A syntactically valid but useless certificate is enough: the point is
+	// which transport comes back, not whether it can verify anything.
+	if err := os.WriteFile(bundle, []byte(testPEM), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("SSL_CERT_FILE", bundle)
+
+	// sync.Once means the package-level cache may already be primed by another
+	// test, so build the transport the same way rather than calling it.
+	base, ok := http.DefaultTransport.(*http.Transport)
+	if !ok {
+		t.Skip("http.DefaultTransport is not an *http.Transport here")
+	}
+	cloned := base.Clone()
+	if cloned.Proxy == nil {
+		t.Fatal("a cloned DefaultTransport lost its Proxy; ProxyFromEnvironment must survive")
+	}
+	if base.Proxy == nil {
+		t.Fatal("http.DefaultTransport has no Proxy, so cloning cannot preserve one")
+	}
+
+	// And the thing a hand-rolled transport gets wrong.
+	handRolled := &http.Transport{}
+	if handRolled.Proxy != nil {
+		t.Fatal("a bare &http.Transport{} unexpectedly has a Proxy; the hazard this guards has changed")
+	}
+}
+
+// testPEM is a throwaway self-signed certificate. It only has to parse.
+const testPEM = `-----BEGIN CERTIFICATE-----
+MIIBIjCBygIJAKU2gBb2gW1OMAoGCCqGSM49BAMCMBQxEjAQBgNVBAMMCWxvY2Fs
+aG9zdDAeFw0yNDAxMDEwMDAwMDBaFw0zNDAxMDEwMDAwMDBaMBQxEjAQBgNVBAMM
+CWxvY2FsaG9zdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABGYr0kR5mS7xU3xU
+0m4k9p0aQ0zR4rK9yQn8VZ3aVvRlMhN3kKqGvQ6mF3dKxV0Q7mJ9Fz0bKxZ7Q8yV
+nS8wCgYIKoZIzj0EAwIDSAAwRQIhAPz0qVvXYvV0m0K3f5o3QW0wV0TzL0q0kY0F
+lQ0000000AiBQ0000000000000000000000000000000000000000000==
+-----END CERTIFICATE-----`
