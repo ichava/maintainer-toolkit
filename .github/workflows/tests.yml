@@ -64,3 +64,23 @@ jobs:
           files: coverage.xml
           flags: unittests
           fail_ci_if_error: false
+
+  actionlint:
+    name: Workflow lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Nothing else reads these files until a tag is pushed. `release.yml` triggers
+    # on `push: tags`, so until now a broken workflow was first observed as a
+    # release that refused to start -- after the decision to release had been made.
+    #
+    # A YAML parse is not a substitute. `yaml.safe_load` accepts a duplicate key
+    # and silently keeps the last one, which is how a double-applied patch shipped
+    # a step carrying `continue-on-error:` twice and still validated clean.
+    # actionlint rejects what Actions rejects.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: actionlint
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
