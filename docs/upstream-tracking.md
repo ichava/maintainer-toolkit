@@ -1,5 +1,3 @@
-[← Documentation index](../README.md#documentation)
-
 # Icon-pack upstream tracking
 
 *Reference + design notes.*
