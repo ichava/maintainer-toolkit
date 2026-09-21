@@ -6,18 +6,23 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
-- **`SSL_CERT_FILE` is honoured, and the transport keeps its proxy.** Go reads that variable on
-  Linux but not on macOS, where `crypto/x509` uses the platform verifier and
-  `x509.SystemCertPool()` returns **zero subjects** however the variable is set. That costs
-  nothing in production -- the image is Linux -- but it stops the tool working on a developer
-  machine behind a TLS-intercepting proxy, which is an ordinary corporate setup and is also the
-  sandbox this was built in. The bundle is now loaded into an explicit pool.
+- **The HTTP transport keeps its proxy, and `SSL_CERT_FILE` is loaded explicitly.**
 
   The transport is *cloned* from `http.DefaultTransport` rather than built fresh, and that is the
   load-bearing half. A hand-rolled `&http.Transport{TLSClientConfig: …}` silently drops
   `Proxy: http.ProxyFromEnvironment`: every request then dials directly and fails as
   `no such host`, which reads like DNS rather than like the configuration mistake it is. Pinned
-  by a test that asserts a bare `&http.Transport{}` has no Proxy and a clone does.
+  by a test that asserts a bare `&http.Transport{}` has no Proxy and a clone does. Two sessions
+  confirmed this independently.
+
+  The certificate half is defensive rather than established, and the code says so. Go is
+  documented to honour `SSL_CERT_FILE`, and on Linux -- production, since the image is Linux --
+  it does. On the macOS machine this was developed on it demonstrably did not: with the variable
+  visible to the process, `x509.SystemCertPool()` returned zero subjects and every TLS dial
+  failed, while `gh` on the same toolchain in the same shell succeeded. A second session measured
+  the opposite and neither could reproduce the other, so the bundle is loaded explicitly, which
+  is correct under either reading -- a no-op where Go already honours the variable, and a fix
+  where it does not.
 
   With it, `check` runs against the live registries for the first time: tabler 3.46.0 behind
   3.47.0, flag 7.0.0 behind 7.5.0, bundled 2.2.0 behind 2.2.531, emoji current, exit 1. The

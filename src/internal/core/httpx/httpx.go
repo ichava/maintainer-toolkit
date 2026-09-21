@@ -71,23 +71,32 @@ var (
 	transportVal  http.RoundTripper
 )
 
-// defaultTransport is http.DefaultTransport, with SSL_CERT_FILE honoured.
+// defaultTransport is http.DefaultTransport, with SSL_CERT_FILE loaded
+// explicitly and the proxy preserved.
 //
-// Two things here are easy to get wrong and both were, in this order.
-//
-// Go honours SSL_CERT_FILE on Linux but not on macOS, where crypto/x509 uses
-// the platform verifier and x509.SystemCertPool() comes back with zero
-// subjects however the variable is set. That is fine in production -- the
-// Docker image is Linux -- but it stops the tool working on a developer
-// machine behind a TLS-intercepting proxy, which is an ordinary corporate
-// setup. Loading the bundle into an explicit pool covers both.
-//
-// The transport is *cloned* from http.DefaultTransport rather than built
-// fresh. A hand-rolled &http.Transport{TLSClientConfig: …} silently drops
+// The proxy half is the load-bearing one, and it is unconditional. The
+// transport is *cloned* from http.DefaultTransport rather than built fresh,
+// because a hand-rolled &http.Transport{TLSClientConfig: ...} silently drops
 // Proxy: http.ProxyFromEnvironment along with the connection-pool and timeout
-// defaults -- and losing the proxy turns every request into a direct dial,
-// which fails as "no such host" and reads like DNS rather than like the
-// configuration mistake it is.
+// defaults. Losing the proxy turns every request into a direct dial, which
+// fails as "no such host" and reads like DNS rather than like the
+// configuration mistake it is. Two sessions have now confirmed that
+// independently; it is the part to keep if this function is ever simplified.
+//
+// The certificate half is defensive rather than established. Go is documented
+// to honour SSL_CERT_FILE, and on Linux -- which is what the Docker image runs,
+// and therefore what production uses -- it does. On the macOS machine this was
+// developed on it demonstrably did not: with the variable set and visible to
+// the process, x509.SystemCertPool() returned zero subjects and every TLS dial
+// failed, while `gh` on the same toolchain and in the same shell succeeded
+// (it loads the bundle itself). A second session measured the opposite on
+// nominally the same setup and neither of us could reproduce the other.
+//
+// So this does not claim what Go does. It loads the bundle explicitly, which
+// is correct under either reading: where Go already honours the variable this
+// installs the same roots twice and changes nothing, and where it does not the
+// tool still works behind a TLS-intercepting proxy. If someone later
+// establishes the mechanism, the thing to fix is this comment -- not the code.
 func defaultTransport() http.RoundTripper {
 	transportOnce.Do(func() {
 		transportVal = http.DefaultTransport
