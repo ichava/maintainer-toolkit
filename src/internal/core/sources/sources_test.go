@@ -80,7 +80,7 @@ func TestExtractTarGz(t *testing.T) {
 	})
 
 	dest := filepath.Join(dir, "out")
-	if err := extractTarGz(archive, dest); err != nil {
+	if err := ExtractTarGz(archive, dest); err != nil {
 		t.Fatal(err)
 	}
 
@@ -97,7 +97,7 @@ func TestExtractTarGzRefusesATraversingEntry(t *testing.T) {
 	writeTarGz(t, archive, map[string]string{"../escaped.svg": "<svg/>"})
 
 	dest := filepath.Join(dir, "out")
-	_ = extractTarGz(archive, dest)
+	_ = ExtractTarGz(archive, dest)
 
 	if _, err := os.Stat(filepath.Join(dir, "escaped.svg")); err == nil {
 		t.Fatal("a traversing archive entry was written outside the destination")
@@ -126,7 +126,7 @@ func TestExtractZip(t *testing.T) {
 	f.Close()
 
 	dest := filepath.Join(dir, "out")
-	if err := extractZip(archive, dest); err != nil {
+	if err := ExtractZip(archive, dest); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := os.Stat(filepath.Join(dest, "openmoji-15.1.0", "color", "svg", "1F600.svg")); err != nil {

@@ -138,6 +138,7 @@ Run with no arguments in a terminal for the interactive menu.`,
 		newCheckCommand(),
 		newSyncCommand(),
 		newRecipeCommand(),
+		newBundledCommand(),
 		newMenuCommand(),
 		newVersionCommand(),
 	)

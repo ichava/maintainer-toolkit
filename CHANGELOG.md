@@ -6,6 +6,49 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **`imt bundled audit` -- identifies, by measurement, where each vendored set in the aggregator
+  pack came from.** It fetches candidate npm packages, scores every directory in them against the
+  committed icons, and believes nothing on the strength of a name: a candidate is accepted only
+  when the bytes it ships are the bytes already committed.
+
+  It was written instead of the `iconify` recipe the config asks for, because that recipe would
+  have been destructive. Measured across the pack, the 121,314 committed icons carry **26 distinct
+  `<svg>` attribute signatures** -- `bootstrap-icons` keeps `class="bi bi-alarm"`, `heroicons`
+  keeps `data-slot`, `fontawesome` keeps its licence comment, `akar-icons` is stroke-based -- where
+  anything rendered from `@iconify-json/*` would have exactly one. Each set is its own upstream's
+  native distribution, so `update_command.type: "iconify"` describes an approach this pack was
+  never built with, and implementing it would have rewritten every file into a uniform dialect,
+  discarding a licence attribution among much else.
+
+  Refreshing the pack therefore needs a per-set manifest that does not exist. This builds one.
+  Run against the real pack it resolves **21 of 72 sets**, two of them exactly:
+  `bootstrap-icons@1.13.1` reproduces all 2,078 of its committed icons byte for byte, and
+  `feather-icons@4.29.2` all of its.
+
+  Confidence is graded on two signals kept deliberately apart, because the audit showed why:
+  `ionicons` matched **1,356 of 1,356 names with zero identical bytes**. The committed files
+  expand what upstream now writes as CSS classes into explicit `fill`/`stroke` attributes and use
+  comma-separated path data -- an older release of the right project, not a wrong project. So byte
+  identity grades the *version* and name coverage grades the *source*, and `package` means
+  "upstream found, pin a version".
+
+  For a set the name patterns cannot reach, supply the package and let the tool answer:
+
+      imt bundled audit --set phosphor-icons --package @phosphor-icons/core
+
+  which reports `partial 1512/9072 package/assets/bold` -- the project is right, and the pack has
+  flattened several weight variants into one directory, so no single upstream directory covers it.
+
+### Fixed
+
+- **`config/icon-sets-bundled.json` describes a pack that does not exist.** Its `_status` points
+  at a recipe path that was never written, and the pack's own `update_command._note` claims the
+  sets listed under `metadata.data.categories.*.sets` "define what's vendored". They do not: 42
+  sets are declared and 72 are vendored, 13 declared sets have no directory at all -- including
+  `lucide` and `material-design-icons` -- and 43 vendored sets are undeclared. Recorded here
+  rather than silently corrected, because which list is meant to be authoritative is a decision
+  for the pack's owner.
+
 - **The sources, transforms, sinks and recipes.** The engine is complete: `sync` and `recipe`
   now run real pipelines rather than reporting that they cannot.
 

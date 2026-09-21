@@ -87,7 +87,7 @@ func (s NpmTarball) Execute(ctx *pipeline.Context) error {
 	}
 
 	target := filepath.Join(workDir, "extracted")
-	if err := extractTarGz(filepath.Join(workDir, tarball), target); err != nil {
+	if err := ExtractTarGz(filepath.Join(workDir, tarball), target); err != nil {
 		return err
 	}
 
@@ -156,10 +156,10 @@ func (s GithubArchive) Execute(ctx *pipeline.Context) error {
 	}
 
 	target := filepath.Join(workDir, "extracted")
-	if err := extractZip(archive, target); err != nil {
+	if err := ExtractZip(archive, target); err != nil {
 		// GitHub serves .zip for the tags URL, but a project can point
 		// archive_url at a tarball instead.
-		if tarErr := extractTarGz(archive, target); tarErr != nil {
+		if tarErr := ExtractTarGz(archive, target); tarErr != nil {
 			return fmt.Errorf("%s is neither a zip (%v) nor a gzipped tar (%v)", url, err, tarErr)
 		}
 	}
@@ -319,7 +319,8 @@ func safeJoin(dest, name string) (string, error) {
 	return cleaned, nil
 }
 
-func extractTarGz(archive, dest string) error {
+// ExtractTarGz unpacks a gzipped tar, refusing any entry that escapes dest.
+func ExtractTarGz(archive, dest string) error {
 	f, err := os.Open(archive)
 	if err != nil {
 		return err
@@ -363,7 +364,8 @@ func extractTarGz(archive, dest string) error {
 	}
 }
 
-func extractZip(archive, dest string) error {
+// ExtractZip unpacks a zip, refusing any entry that escapes dest.
+func ExtractZip(archive, dest string) error {
 	r, err := zip.OpenReader(archive)
 	if err != nil {
 		return err
