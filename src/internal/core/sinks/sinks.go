@@ -35,6 +35,19 @@ type Filesystem struct {
 	// has deleted. An incremental sink would leave it in the pack forever.
 	Incremental bool
 
+	// MinRetention refuses to replace a populated destination with
+	// substantially fewer files, as a fraction of what is already there.
+	// Zero disables the check.
+	//
+	// Because the wipe is the point, it is also the hazard. Observed while
+	// building the aggregator refresh: iconoir's upstream reorganised into
+	// per-weight directories, so a refresh matching one of them would have
+	// replaced 1,671 committed icons with 1,383 -- deleting 288 without
+	// anything failing. A pack losing a sixth of a set to an upstream
+	// reshuffle should stop the run and ask, not proceed quietly on a Monday
+	// morning cron.
+	MinRetention float64
+
 	Log *slog.Logger
 }
 
@@ -63,6 +76,9 @@ func (s Filesystem) Execute(ctx *pipeline.Context) error {
 
 	if !s.Incremental {
 		if _, err := os.Stat(target); err == nil {
+			if err := s.guardRetention(source, target, log); err != nil {
+				return err
+			}
 			log.Info("filesystem: wiping", "target", target)
 			if err := os.RemoveAll(target); err != nil {
 				return err
@@ -108,6 +124,55 @@ func (s Filesystem) Execute(ctx *pipeline.Context) error {
 	ctx.SetString(pipeline.KeyFilesystemTgt, target)
 	log.Info("filesystem", "copied", copied, "target", target)
 	return nil
+}
+
+// guardRetention refuses a wipe that would shrink the destination too far.
+//
+// Counted before anything is removed, so a refusal leaves the pack exactly as
+// it was.
+func (s Filesystem) guardRetention(source, target string, log *slog.Logger) error {
+	if s.MinRetention <= 0 {
+		return nil
+	}
+
+	existing, err := countSVGs(target)
+	if err != nil || existing == 0 {
+		return nil //nolint:nilerr // nothing to protect
+	}
+	incoming, err := countSVGs(source)
+	if err != nil {
+		return err
+	}
+
+	ratio := float64(incoming) / float64(existing)
+	if ratio >= s.MinRetention {
+		if incoming < existing {
+			// A small shrink is ordinary -- upstreams retire icons -- but it
+			// is worth saying out loud, because nothing else in the run will.
+			log.Warn("filesystem: destination shrinks",
+				"target", target, "from", existing, "to", incoming)
+		}
+		return nil
+	}
+
+	return fmt.Errorf(
+		"refusing to replace %d icons in %s with %d (%.0f%% of what is there, floor is %.0f%%): "+
+			"upstream has probably reorganised, so check the manifest path before letting this through",
+		existing, target, incoming, ratio*100, s.MinRetention*100)
+}
+
+func countSVGs(dir string) (int, error) {
+	n := 0
+	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && strings.HasSuffix(strings.ToLower(path), ".svg") {
+			n++
+		}
+		return nil
+	})
+	return n, err
 }
 
 // copyFile copies contents and mode. Only .svg files reach it -- anything else

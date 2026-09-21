@@ -81,6 +81,17 @@ type Sanitise struct {
 	// the violation is reported either way.
 	Strict bool
 
+	// ReportOnly counts what the policy would remove without writing anything.
+	//
+	// For the aggregator pack, which has never been sanitised: its committed
+	// icons keep comments the policy strips, including fontawesome's licence
+	// attribution, so enforcing the policy during a refresh would rewrite tens
+	// of thousands of files and discard that attribution. Measured, all 50
+	// fontawesome icons sampled change under the policy. Reporting keeps the
+	// security picture visible without turning a refresh into a rewrite; the
+	// decision to enforce is then someone's to take deliberately.
+	ReportOnly bool
+
 	Log *slog.Logger
 }
 
@@ -127,19 +138,25 @@ func (t Sanitise) Execute(ctx *pipeline.Context) error {
 		}
 
 		if !bytes.Equal(filtered, original) {
-			if err := os.WriteFile(path, filtered, 0o644); err != nil {
-				return err
+			if !t.ReportOnly {
+				if err := os.WriteFile(path, filtered, 0o644); err != nil {
+					return err
+				}
 			}
 			cleaned++
 		}
 	}
 
+	// `cleaned` counts files the policy would change; in report-only mode none
+	// of them were written, which the metric records so a reader of the run
+	// summary cannot mistake one mode for the other.
 	ctx.Metric("sanitise", map[string]any{
 		"scanned": len(files), "cleaned": cleaned,
 		"unparsable": unparsable, "violations": len(violations),
+		"report_only": t.ReportOnly,
 	})
-	log.Info("sanitise", "scanned", len(files), "cleaned", cleaned,
-		"unparsable", unparsable, "violations", len(violations))
+	log.Info("sanitise", "scanned", len(files), "would_change", cleaned,
+		"written", !t.ReportOnly, "unparsable", unparsable, "violations", len(violations))
 
 	if t.Strict && len(violations) > 0 {
 		return &svg.PolicyViolationError{Violations: violations}

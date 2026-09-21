@@ -193,7 +193,10 @@ func TestResolveSetStopsAtAnExactMatch(t *testing.T) {
 	if got.Confidence != ConfidenceExact {
 		t.Fatalf("confidence = %q, note %q", got.Confidence, got.Note)
 	}
-	if got.Package != "demo-icons" || got.Path != filepath.Join("package", "icons") {
+	// The path is relative to the npm wrapper, not the extraction root: that is
+	// the frame NpmTarball hands downstream, so it is the frame SubsetTo reads.
+	// Recording "package/icons" here made the recipe fail to find it.
+	if got.Package != "demo-icons" || got.Path != "icons" {
 		t.Errorf("package = %q path = %q", got.Package, got.Path)
 	}
 	if got.Identical != 2 {
@@ -216,6 +219,9 @@ func TestResolveSetAcceptsAnExplicitCandidate(t *testing.T) {
 
 	if got.Confidence != ConfidenceExact {
 		t.Fatalf("confidence = %q, note %q", got.Confidence, got.Note)
+	}
+	if got.Path != "svg" {
+		t.Errorf("path = %q, want it relative to the npm package/ wrapper", got.Path)
 	}
 	if got.Package != "@scope/nothing-like-the-set" {
 		t.Errorf("package = %q", got.Package)

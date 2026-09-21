@@ -6,6 +6,50 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **The per-set native refresh for `icon-sets-bundled`.** One pipeline per set, each from that
+  set's own upstream, so every set keeps the SVG dialect it actually ships in rather than being
+  rewritten into a uniform one. Driven by `config/icon-sets-bundled.sets.json`, seeded from the
+  audit with the 21 sets it established.
+
+  The manifest is a separate file rather than a key in the pack config, deliberately and
+  temporarily: the Python is still the Docker entrypoint, its `PackConfig` rejects unknown keys,
+  and a new key would break every Python command for this pack during the overlap. Verified --
+  the Python still loads all four configs with the new file present. Fold it in once the Python
+  is gone.
+
+  Three properties, each of which exists because of something measured while building it:
+
+  - **A set with no manifest entry is not touched at all.** Not fetched, not wiped. The audit
+    resolves 21 of 72, and the remaining 51 must stay exactly as they are; a manifest is the
+    input to something that wipes a directory, so absent is safe and present-but-wrong replaces a
+    set's icons with another project's.
+  - **The refresh refuses to shrink a set by more than 10%.** Not hypothetical: iconoir's
+    upstream reorganised into per-weight directories, so the audited path now covers 1,383 of the
+    committed 1,671 icons. Without the guard a scheduled run would have deleted 288 and reported
+    success. It counts before it removes, so a refusal leaves the pack untouched -- confirmed
+    against the real set, which still had all 1,671 afterwards.
+  - **The policy is reported, not enforced.** This pack has never been sanitised: its icons keep
+    comments the policy strips, and every fontawesome file sampled changes under it -- including
+    the embedded Font Awesome licence notice. Enforcing during a refresh would rewrite tens of
+    thousands of files and drop that attribution, so violations are counted and surfaced and the
+    bytes are left as upstream shipped them. Enabling it is a decision for the pack's owner, not
+    a side effect of a Monday cron.
+
+  Verified end to end against the live registries: all 21 sets fetch, subset and copy, and
+  `bootstrap-icons` reproduces its 2,078 committed icons **byte for byte, zero differing**.
+  `feather-icons` differs by exactly one file, an icon upstream has added since.
+
+### Fixed
+
+- **The audit recorded paths in a frame the recipe could not read.** It reported them relative to
+  the extraction root (`package/icons`) while `NpmTarball` hands the *inside* of the npm wrapper
+  downstream, so every `SubsetTo` failed with "subdir not found". The audit now resolves inside
+  `package/`, which is the frame the pipeline uses.
+
+- **A set tracking `latest` stamped the literal string "latest" as its version.** `NpmTarball`
+  now records what npm resolved -- read from the tarball filename -- so the version in the logs,
+  the metrics and any stamp is a version rather than a word that compares as one.
+
 - **The HTTP transport keeps its proxy, and `SSL_CERT_FILE` is loaded explicitly.**
 
   The transport is *cloned* from `http.DefaultTransport` rather than built fresh, and that is the

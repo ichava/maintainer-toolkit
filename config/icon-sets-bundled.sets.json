@@ -1,0 +1,128 @@
+{
+  "pack": "ichava/icon-sets-bundled",
+  "sets": {
+    "academicons": {
+      "package": "academicons",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (151 of 151 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "bootstrap-icons": {
+      "package": "bootstrap-icons",
+      "path": "icons",
+      "confidence": "exact"
+    },
+    "cryptocurrency-icons": {
+      "package": "cryptocurrency-icons",
+      "path": "svg/black",
+      "confidence": "package",
+      "note": "upstream identified (482 of 483 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "feather-icons": {
+      "package": "feather-icons",
+      "path": "dist/icons",
+      "confidence": "exact"
+    },
+    "govicons": {
+      "package": "govicons",
+      "path": "raw-svg",
+      "confidence": "package",
+      "note": "upstream identified (136 of 136 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "grommet-icons": {
+      "package": "grommet-icons",
+      "path": "img",
+      "confidence": "package",
+      "note": "upstream identified (635 of 635 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "humbleicons": {
+      "package": "humbleicons",
+      "path": "icons",
+      "confidence": "package",
+      "note": "upstream identified (246 of 247 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "iconoir": {
+      "package": "iconoir",
+      "path": "icons/regular",
+      "confidence": "strong"
+    },
+    "ikonate": {
+      "package": "ikonate",
+      "path": "icons",
+      "confidence": "package",
+      "note": "upstream identified (283 of 283 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "ionicons": {
+      "package": "ionicons",
+      "path": "dist/collection/components/icon/svg",
+      "confidence": "package",
+      "note": "upstream identified (1356 of 1356 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "jam-icons": {
+      "package": "jam-icons",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (896 of 940 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "line-awesome-icons": {
+      "package": "line-awesome",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (1544 of 1544 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "lucide-icons": {
+      "package": "lucide-static",
+      "path": "icons",
+      "confidence": "package",
+      "note": "upstream identified (1843 of 1863 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "mdi": {
+      "package": "@mdi/svg",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (7447 of 7447 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "microns": {
+      "package": "microns",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (164 of 164 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "mono-icons": {
+      "package": "mono-icons",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (179 of 180 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "pepicons": {
+      "package": "pepicons",
+      "path": "svg/pencil",
+      "confidence": "package",
+      "note": "upstream identified (1250 of 1250 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "prime-icons": {
+      "package": "primeicons",
+      "path": "raw-svg",
+      "confidence": "package",
+      "note": "upstream identified (254 of 260 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "simple-line-icons": {
+      "package": "simple-line-icons",
+      "path": "src/svgs",
+      "confidence": "package",
+      "note": "upstream identified (189 of 189 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "vaadin-icons": {
+      "package": "vaadin-icons",
+      "path": "assets/svg",
+      "confidence": "package",
+      "note": "upstream identified (636 of 636 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "zondicons": {
+      "package": "zondicons",
+      "path": ".",
+      "confidence": "package",
+      "note": "upstream identified (293 of 297 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    }
+  }
+}

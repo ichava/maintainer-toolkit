@@ -21,18 +21,22 @@ import (
 // that breaks icon-sets-emoji: it declares source.type "url" -- because that is
 // how its *version* is discovered -- while its assets come from three separate
 // upstreams that only the named recipe knows about.
-func Build(pack *config.PackConfig, version string, dryRun bool) ([]*pipeline.Pipeline, error) {
+func Build(pack *config.PackConfig, version string, dryRun bool, configDir string) ([]*pipeline.Pipeline, error) {
 	switch {
 	case pack.Name == "icon-sets-emoji":
 		return buildEmojiSets(pack, version, dryRun)
 
 	case pack.Name == "icon-sets-bundled":
-		// The iconify recipe has never been written. The wording is a
-		// cross-repository contract: icon-sets-bundled's sync-upstream.yml
-		// greps the output for "recipe pending" and converts the failure into
-		// a green run with a ::notice::, because this is a documented no-op
-		// rather than a break. Rewording it turns that scheduled job red.
-		return nil, fmt.Errorf("%s: bundled-icons %w", pack.Pack, pipeline.ErrRecipePending)
+		// A native per-set refresh, not the `iconify` one the pack config
+		// asks for -- see buildBundled for why that would have been a rewrite
+		// rather than a refresh.
+		//
+		// This no longer returns ErrRecipePending, which icon-sets-bundled's
+		// sync-upstream.yml greps for to turn the failure into a green run.
+		// That wrapper becomes dead once a manifest exists, and should be
+		// removed from the workflow in the same change that ships one --
+		// leaving it costs nothing, but it will never fire again.
+		return buildBundled(pack, configDir, dryRun)
 
 	case pack.Source.Type == "npm":
 		p, err := buildSimpleNPM(pack, version, dryRun)

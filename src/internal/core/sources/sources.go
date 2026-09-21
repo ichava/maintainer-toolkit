@@ -98,9 +98,30 @@ func (s NpmTarball) Execute(ctx *pipeline.Context) error {
 	}
 
 	ctx.SetFetchedPath(pkgDir)
-	ctx.SetFetchedVersion(s.Version)
+	// Record what npm resolved, not what was asked for. A set tracking
+	// "latest" would otherwise stamp the literal string "latest" as its
+	// version, which is not a version and compares as one.
+	ctx.SetFetchedVersion(resolvedVersion(tarball, s.Package, s.Version))
 	ctx.SetString(pipeline.KeyFetchedSource, "npm:"+spec)
 	return nil
+}
+
+// resolvedVersion reads the version out of the filename npm produced.
+//
+// `npm pack` names the file <name>-<version>.tgz with the scope stripped and
+// its slash replaced by a dash. Falls back to the requested version, which is
+// right whenever that was already concrete.
+func resolvedVersion(tarball, pkg, requested string) string {
+	base := strings.TrimSuffix(tarball, ".tgz")
+
+	name := pkg
+	if i := strings.Index(name, "/"); i >= 0 {
+		name = strings.TrimPrefix(name[:i], "@") + "-" + name[i+1:]
+	}
+	if v := strings.TrimPrefix(base, name+"-"); v != base && v != "" {
+		return v
+	}
+	return requested
 }
 
 // GithubArchive downloads a tagged archive and extracts it.

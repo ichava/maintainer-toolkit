@@ -241,7 +241,7 @@ func newRecipeCommand() *cobra.Command {
 // pipelines left on disk, so continuing past a failed fetch would commit a
 // half-refreshed pack.
 func RunRecipe(ctx context.Context, pack *config.PackConfig, version string, dryRun bool) (pipeline.Result, error) {
-	built, err := recipes.Build(pack, version, dryRun)
+	built, err := recipes.Build(pack, version, dryRun, configDir())
 	if err != nil {
 		return pipeline.Result{}, err
 	}

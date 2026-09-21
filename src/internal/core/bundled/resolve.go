@@ -127,7 +127,17 @@ func ResolveSet(ctx context.Context, setDir string, fetch Fetcher, workDir strin
 			continue
 		}
 
-		best, err := BestDirectory(filepath.Join(dest, "x"), fp)
+		// Search inside the npm wrapper, not above it. Every npm tarball nests
+		// its contents in package/, and NpmTarball hands the *inside* of that
+		// to the rest of the pipeline -- so a path recorded relative to the
+		// extraction root is off by one component and SubsetTo cannot find it.
+		// The audit and the recipe have to express paths in the same frame.
+		root := filepath.Join(dest, "x", "package")
+		if info, statErr := os.Stat(root); statErr != nil || !info.IsDir() {
+			root = filepath.Join(dest, "x")
+		}
+
+		best, err := BestDirectory(root, fp)
 		if err != nil || best.Present == 0 {
 			tried = append(tried, pkg+"@"+version)
 			continue
