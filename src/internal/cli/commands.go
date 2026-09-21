@@ -3,7 +3,6 @@ package cli
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/ichava/maintainer-toolkit/src/internal/core/checker"
 	"github.com/ichava/maintainer-toolkit/src/internal/core/config"
 	"github.com/ichava/maintainer-toolkit/src/internal/core/pipeline"
+	"github.com/ichava/maintainer-toolkit/src/internal/core/recipes"
 	"github.com/ichava/maintainer-toolkit/src/internal/ui"
 )
 
@@ -234,25 +234,28 @@ func newRecipeCommand() *cobra.Command {
 	return cmd
 }
 
-// RunRecipe dispatches a pack to its recipe.
+// RunRecipe builds a pack's pipelines and runs them in order.
 //
-// Dispatch order is by pack name first and source type second, and that is not
-// incidental: icon-sets-emoji declares source.type "url", so checking the type
-// first would send it to the "no recipe wired" branch.
+// Aborts on the first failure and returns that result, rather than running the
+// rest: the emoji recipe's trailing pipeline commits whatever the three asset
+// pipelines left on disk, so continuing past a failed fetch would commit a
+// half-refreshed pack.
 func RunRecipe(ctx context.Context, pack *config.PackConfig, version string, dryRun bool) (pipeline.Result, error) {
-	switch {
-	case pack.Name == "icon-sets-emoji":
-		return pipeline.Result{}, fmt.Errorf(
-			"%s: the emoji-sets recipe is not ported to Go yet; the Python entrypoint still runs it", pack.Pack)
-
-	case pack.Name == "icon-sets-bundled":
-		return pipeline.Result{}, fmt.Errorf("%s: bundled-icons %w", pack.Pack, pipeline.ErrRecipePending)
-
-	case pack.Source.Type == "npm":
-		return pipeline.Result{}, fmt.Errorf(
-			"%s: the simple-npm recipe is not ported to Go yet; the Python entrypoint still runs it", pack.Pack)
+	built, err := recipes.Build(pack, version, dryRun)
+	if err != nil {
+		return pipeline.Result{}, err
 	}
 
-	return pipeline.Result{}, fmt.Errorf(
-		"%s: no recipe wired for source.type=%q", pack.Pack, pack.Source.Type)
+	var last pipeline.Result
+	for _, p := range built {
+		result, err := p.Run()
+		if err != nil {
+			return result, err
+		}
+		last = result
+		if !result.Success {
+			return result, nil
+		}
+	}
+	return last, nil
 }

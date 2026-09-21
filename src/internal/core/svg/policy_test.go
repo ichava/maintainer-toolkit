@@ -276,3 +276,27 @@ func TestStyleValueIsSafe(t *testing.T) {
 		}
 	}
 }
+
+// TestRemovingAnElementTakesItsTrailingWhitespace is a byte-fidelity
+// regression, and the one defect the corpus differential could not see --
+// that test compares surviving structure, and whitespace is not structure.
+//
+// lxml models the text after an element as that element's .tail, so
+// el.remove(child) takes both. A tree built from Go's decoder holds it as a
+// separate sibling, so removing only the element leaves its indentation
+// behind. Found by diffing a real sync of icon-sets-flag@7.5.0 against what a
+// previous Python run had committed: 538 of 542 icons matched byte for byte,
+// and the four that did not each carried one orphaned newline-and-indent.
+func TestRemovingAnElementTakesItsTrailingWhitespace(t *testing.T) {
+	doc := "<svg xmlns=\"http://www.w3.org/2000/svg\">\n  <path d=\"M0 0\"/>\n  <style>a{}</style>\n  <path d=\"M1 1\"/>\n</svg>"
+
+	out, _, err := SanitiseBytes([]byte(doc), false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := "<svg xmlns=\"http://www.w3.org/2000/svg\">\n  <path d=\"M0 0\"/>\n  <path d=\"M1 1\"/>\n</svg>"
+	if string(out) != want {
+		t.Errorf("removing <style> left its indentation behind\n got: %q\nwant: %q", out, want)
+	}
+}

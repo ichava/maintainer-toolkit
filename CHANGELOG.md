@@ -6,6 +6,42 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **The sources, transforms, sinks and recipes.** The engine is complete: `sync` and `recipe`
+  now run real pipelines rather than reporting that they cannot.
+
+  Verified end to end against a real upstream, not fixtures. A `recipe icon-sets-flag
+  --version 7.5.0 --dry-run` fetches from npm, narrows to `flags/`, applies the policy to all
+  542 icons and writes them into the pack -- and the result is **byte-for-byte identical to
+  what a previous Python run committed**, all 542 files.
+
+  That comparison found the one defect the corpus differential could not: lxml models the text
+  after an element as that element's `.tail`, so `el.remove(child)` takes both, while a tree
+  built from Go's decoder holds it as a separate sibling. Removing only the element left its
+  indentation behind, and 4 of the 542 icons differed by exactly one orphaned newline. The
+  corpus test compares surviving structure, and whitespace is not structure -- so it took a
+  byte diff against a committed artefact to see it.
+
+  Deliberate departures from the Python, each with a test:
+
+  - **`icon-sets-emoji` was never version-stamped.** Its recipe ends with a commit-only
+    pipeline whose source was a no-op, and every pipeline gets its own context -- so
+    `VersionStamp` found no `fetched_version`, logged "skipping" and did nothing. The pack's
+    vendored version never moved and its sync could not converge, which is exactly the V49
+    failure the vendored-version design exists to prevent, still live in the one recipe that
+    composes several pipelines. The commit pipeline now carries the version forward.
+  - **Archive extraction refuses a traversing entry.** Python got that free from `tarfile`'s
+    `filter="data"`; Go's `archive/tar` and `archive/zip` do nothing about it, and this fetches
+    archives from the internet inside a container with the pack tree mounted.
+  - **`gh pr list` is filtered to open pull requests.** Unfiltered, it matched the *merged* one
+    once the first sync landed, so every later run printed "already open", skipped creation and
+    exited 0 while the branch it had just pushed had nothing tracking it.
+  - **The sync fetches the remote tracking ref before pushing.** `actions/checkout` fetches only
+    the default branch, so `refs/remotes/origin/<branch>` does not exist on a runner and
+    `--force-with-lease` has nothing to compare -- git then rejects the push as "stale info",
+    which reads like a race and is not one.
+  - **`Categorise` refuses a taxonomy that parsed to zero records** rather than filing every
+    icon under "missing" and silently emptying the pack.
+
 - **`internal/core/svg` -- the SVG policy layer, the riskiest part of the port.** lxml is a real
   DOM and Go's `encoding/xml` is a streaming decoder, so the two had to be made to agree rather
   than assumed to. It is verified by running **both implementations over all 17,812 vendored

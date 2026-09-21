@@ -51,7 +51,9 @@ func SanitiseBytes(raw []byte, alsoStripClass bool) ([]byte, []string, error) {
 // serialise.
 func filterElement(p *Policy, el *Node, removed *[]string, alsoStripClass bool) {
 	kept := el.Children[:0]
-	for _, child := range el.Children {
+	for i := 0; i < len(el.Children); i++ {
+		child := el.Children[i]
+
 		if child.Kind != ElementNode {
 			kept = append(kept, child)
 			continue
@@ -59,6 +61,21 @@ func filterElement(p *Policy, el *Node, removed *[]string, alsoStripClass bool) 
 
 		if !p.TagAllowed(child.Local) {
 			*removed = append(*removed, "<"+child.Local+">")
+
+			// Drop the text that followed it too. lxml models trailing text as
+			// the element's own .tail, so el.remove(child) takes both; a tree
+			// built from Go's decoder holds it as a separate sibling node, and
+			// leaving it behind means every removed element deposits its
+			// indentation in the output.
+			//
+			// Found by diffing a real sync against what a previous Python run
+			// committed -- 538 of flag's 542 icons matched byte for byte and
+			// four did not, each by exactly one orphaned newline-and-indent.
+			// The corpus differential could not see it: that compares surviving
+			// structure, and whitespace is not structure.
+			if i+1 < len(el.Children) && el.Children[i+1].Kind == TextNode {
+				i++
+			}
 			continue
 		}
 
