@@ -4,6 +4,20 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ## [Unreleased]
 
+### Fixed
+
+- **The README's link label named the old central docs repo.** The URL was already correct —
+  `docs/upstream-tracking.md`, in this repository — while the text beside it still read
+  `ichava/documentation/icon-pack-upstream-tracking.md`. The label now names the page the link
+  opens.
+
+  **No link checker sees this class.** The label is a code span, not a target, so the link
+  resolves and the text next to it is wrong — `lychee` and every `](...)` sweep pass it. Found
+  by grepping for `` `…documentation/….md` `` rather than for links, after the estate-wide link
+  scan came back at zero.
+
+## [Unreleased]
+
 ### Added
 
 - **`.scripts/wt` — one git worktree per session, over one object store.** This estate is
