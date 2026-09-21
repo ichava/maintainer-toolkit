@@ -6,6 +6,36 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **The CLI and the TUI, over one engine.** `cmd/imt` builds a cobra tree with all six commands
+  the Python declared -- `list-packs`, `check`, `sync`, `recipe`, `menu`, `version` -- and the
+  exit codes they are consumed by: **1** when `check` finds anything stale, **1** when a `sync`
+  recipe fails, **2** for a usage error. `sync` and `recipe` are wired but report that the
+  recipes are not ported yet; Python is still the entrypoint and still does the real work.
+
+  `menu` is now a Bubble Tea TUI -- menu, pack list, pack detail and a live check view sharing
+  one spinner and one table. **In a non-TTY it prints help and exits 0.** The Python called
+  `questionary.select()` unconditionally, and `menu` is the Docker image's default `CMD`, so on a
+  runner it blocked on a stdin that never answered until the job hit its 30-minute timeout.
+
+  The parity rule is structural rather than aspirational: `internal/app` holds the orchestration
+  and `internal/ui` the rendering, and both front-ends call them. The first attempt kept those
+  helpers in `internal/cli`, which deadlocked into an import cycle the moment the CLI needed to
+  launch the TUI -- a useful accident, since it forced the shared layer to be named instead of
+  living wherever it happened to be written first.
+
+### Fixed
+
+- **`check` reported success for a run that checked nothing.** The summary counted stale packs
+  only, so when every registry was unreachable it found zero stale and printed
+  `All packs up to date` -- observed here with all four upstreams failing. It now separates
+  unresolved packs from up-to-date ones and says `no pack could be checked: 4 of 4 upstreams were
+  unreachable`. Inherited from `core/reporters/tty.py`, which has the same defect.
+
+- **`list-packs` printed the wrong version.** It read `current_version` from this repository's
+  config, which is only the fallback, so a pack that had already been synced still displayed a
+  stale number here while `check` correctly reported it up to date. It now prints the resolved
+  version, the same one every other command compares against.
+
 - **`internal/core/pipeline`, `internal/core/checker` and `internal/core/httpx`.** The engine is
   complete and has no third-party dependencies.
 

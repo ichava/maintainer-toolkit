@@ -215,6 +215,23 @@ func AnyStale(results []Result) bool {
 	return false
 }
 
+// CountErrored returns how many results could not be resolved at all.
+//
+// This exists because summarising on stale alone produces a false green: when
+// every registry is unreachable nothing is *known* to be stale, so a naive
+// "0 stale, therefore all up to date" reports success for a run that checked
+// nothing. The Python reporter had exactly that bug, and it is the shape of
+// failure this estate keeps paying for -- a green that means "did not look".
+func CountErrored(results []Result) int {
+	n := 0
+	for _, r := range results {
+		if r.Latest == "" {
+			n++
+		}
+	}
+	return n
+}
+
 // CountStale returns how many results are behind upstream.
 func CountStale(results []Result) int {
 	n := 0
