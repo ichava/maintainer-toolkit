@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/ichava/maintainer-toolkit/src/internal/core/sources"
@@ -150,6 +151,8 @@ func ResolveSet(ctx context.Context, setDir string, fetch Fetcher, workDir strin
 		if better {
 			res.Package, res.Version, res.Path = pkg, version, best.Dir
 			res.Matched, res.Identical, res.Confidence = best.Present, best.Identical, confidence
+			res.Extra = best.Extra
+			res.Rivals = best.Rivals
 		}
 
 		if confidence == ConfidenceExact {
@@ -162,6 +165,12 @@ func ResolveSet(ctx context.Context, setDir string, fetch Fetcher, workDir strin
 		res.Note = "no candidate reproduced any icon; tried " + strings.Join(tried, ", ")
 	}
 	switch res.Confidence {
+	case ConfidenceAmbiguous:
+		res.Note = fmt.Sprintf(
+			"%s is the right package (%d of %d icons present by name), but %q ties with %s and no file "+
+				"is byte-identical -- these are variant directories sharing filenames, so nothing here "+
+				"can tell them apart; pick the variant the pack vendored and set the path by hand",
+			res.Package, res.Matched, res.Icons, res.Path, strings.Join(quoteAll(res.Rivals), ", "))
 	case ConfidencePackage:
 		res.Note = fmt.Sprintf(
 			"upstream identified (%d of %d icons present by name) but no byte matches -- the pack vendored an older release; pin the version",
@@ -177,4 +186,13 @@ func ResolveSet(ctx context.Context, setDir string, fetch Fetcher, workDir strin
 // sanitise makes a package name safe as a directory component.
 func sanitise(pkg string) string {
 	return strings.NewReplacer("/", "-", "@", "").Replace(pkg)
+}
+
+// quoteAll quotes each entry so a directory list reads unambiguously in a note.
+func quoteAll(in []string) []string {
+	out := make([]string, len(in))
+	for i, v := range in {
+		out[i] = strconv.Quote(v)
+	}
+	return out
 }

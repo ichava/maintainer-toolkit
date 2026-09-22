@@ -49,8 +49,13 @@ match the bytes already committed.
 
   exact    every committed icon reproduced byte for byte
   strong   at least 80% reproduced; the right upstream, slightly moved on
-  package  at least 95% present by name but no byte matches -- upstream
-           identified, version drifted; pin a version
+  package    at least 90% present by name but no byte matches -- upstream
+             identified, version drifted; pin a version. The floor is the same
+             one the refresh's retention guard uses, so this grades in what a
+             refresh would actually accept
+  ambiguous  the right package, matched equally well by two or more sibling
+             directories, with no byte match to separate them -- variant trees
+             sharing filenames. Pick the variant by hand
   partial  some names line up -- may be a different project entirely
   none     nothing matched
 

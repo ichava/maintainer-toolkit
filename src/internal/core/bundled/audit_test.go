@@ -21,22 +21,39 @@ func writeSVGs(t *testing.T, dir string, files map[string]string) string {
 	return dir
 }
 
-func TestFingerprintSetKeysOnTheLeafName(t *testing.T) {
+func TestFingerprintSetKeysOnTheRelativePath(t *testing.T) {
 	root := t.TempDir()
-	// A pack set is flat, but an upstream commonly nests by variant. Keying on
-	// the leaf is what lets a nested upstream directory be recognised.
-	writeSVGs(t, filepath.Join(root, "nested"), map[string]string{"home.svg": "<svg/>"})
-	writeSVGs(t, root, map[string]string{"user.svg": "<svg/>"})
+	writeSVGs(t, filepath.Join(root, "brands"), map[string]string{"x.svg": "<svg>A</svg>"})
+	writeSVGs(t, filepath.Join(root, "solid"), map[string]string{"x.svg": "<svg>B</svg>"})
 
 	fp, err := FingerprintSet(root)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// Two distinct icons that share a leaf name. Keying on the leaf collapsed
+	// them, so a recursive scan counted one committed icon once per variant
+	// directory -- fontawesome scored 5,068 matches against a set of 2,284 and
+	// resolved to the package root.
 	if fp.Count() != 2 {
-		t.Fatalf("count = %d, want 2", fp.Count())
+		t.Fatalf("count = %d, want 2: brands/x and solid/x are different icons", fp.Count())
 	}
-	if _, ok := fp.Hashes["home"]; !ok {
-		t.Error("a nested icon was not keyed by its leaf name")
+	for _, key := range []string{"brands/x", "solid/x"} {
+		if _, ok := fp.Hashes[key]; !ok {
+			t.Errorf("missing key %q; got %v", key, fp.Hashes)
+		}
+	}
+}
+
+func TestIconKeyNormalises(t *testing.T) {
+	for _, tc := range []struct{ in, want string }{
+		{"Home.SVG", "home"},
+		{"brands/Viadeo-Square.svg", "brands/viadeo-square"},
+		{"a/b/c.svg", "a/b/c"},
+	} {
+		if got := iconKey(tc.in); got != tc.want {
+			t.Errorf("iconKey(%q) = %q, want %q", tc.in, got, tc.want)
+		}
 	}
 }
 
@@ -324,4 +341,208 @@ func setNames(rs []Resolution) []string {
 		out = append(out, r.Set)
 	}
 	return out
+}
+
+// TestBestDirectoryFindsTheParentOfAVariantTree is the fontawesome case.
+//
+// The pack vendors brands/, regular/ and solid/ and the upstream ships the
+// same three under svgs/. The directory that corresponds to the set therefore
+// holds no SVGs of its own, so scoring only direct children could never see
+// it: the best a non-recursive scan managed was one variant, 1,758 of 2,284
+// icons, graded "partial", when the answer covers all of them.
+func TestBestDirectoryFindsTheParentOfAVariantTree(t *testing.T) {
+	set := t.TempDir()
+	writeSVGs(t, filepath.Join(set, "brands"), map[string]string{"x.svg": "<svg>A</svg>"})
+	writeSVGs(t, filepath.Join(set, "solid"), map[string]string{"x.svg": "<svg>B</svg>", "y.svg": "<svg>C</svg>"})
+	fp, _ := FingerprintSet(set)
+
+	root := t.TempDir()
+	writeSVGs(t, filepath.Join(root, "svgs", "brands"), map[string]string{"x.svg": "<svg>A</svg>"})
+	writeSVGs(t, filepath.Join(root, "svgs", "solid"), map[string]string{"x.svg": "<svg>B</svg>", "y.svg": "<svg>C</svg>"})
+	// Noise the package root would pick up if the tie-break preferred it.
+	writeSVGs(t, filepath.Join(root, "docs"), map[string]string{"logo.svg": "<svg>Z</svg>"})
+
+	best, err := BestDirectory(root, fp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if best.Dir != "svgs" {
+		t.Errorf("dir = %q, want svgs -- the parent of the variant tree", best.Dir)
+	}
+	if best.Identical != 3 {
+		t.Errorf("identical = %d, want 3", best.Identical)
+	}
+	if Classify(best, fp.Count()) != ConfidenceExact {
+		t.Errorf("confidence = %q, want exact", Classify(best, fp.Count()))
+	}
+}
+
+// TestBestDirectoryPrefersTheTightestEqualMatch keeps the resolver off the
+// package root. WalkDir sees a parent before its children, so an equal score
+// has to let the deeper directory win or every set resolves to "." and the
+// refresh copies a README's logo into the pack beside the icons.
+func TestBestDirectoryPrefersTheTightestEqualMatch(t *testing.T) {
+	set := writeSVGs(t, filepath.Join(t.TempDir(), "set"), map[string]string{
+		"home.svg": "<svg>A</svg>",
+	})
+	fp, _ := FingerprintSet(set)
+
+	root := t.TempDir()
+	writeSVGs(t, filepath.Join(root, "icons"), map[string]string{"home.svg": "<svg>A</svg>"})
+
+	best, _ := BestDirectory(root, fp)
+	if best.Dir != "icons" {
+		t.Errorf("dir = %q, want icons rather than the package root", best.Dir)
+	}
+}
+
+// TestVariantDirectoriesAreReportedAsAmbiguous covers the tie nothing can
+// settle: sibling variant directories sharing filenames, none byte-identical
+// to the committed set, and none measurably closer to it than the others.
+//
+// The three drawings here differ from the committed one by the same amount, so
+// resemblance cannot separate them either. That is the point -- the result
+// must say so rather than return whichever directory WalkDir reached last.
+func TestVariantDirectoriesAreReportedAsAmbiguous(t *testing.T) {
+	set := writeSVGs(t, t.TempDir(), map[string]string{
+		"btc.svg": `<svg fill="currentColor"><path d="AAAAAAAA"/></svg>`,
+		"eth.svg": `<svg fill="currentColor"><path d="AAAAAAAA"/></svg>`,
+	})
+
+	pkg := t.TempDir()
+	for variant, data := range map[string]string{
+		"one": "BBBBBBBB", "two": "CCCCCCCC", "three": "DDDDDDDD",
+	} {
+		writeSVGs(t, filepath.Join(pkg, "svg", variant), map[string]string{
+			"btc.svg": `<svg fill="currentColor"><path d="` + data + `"/></svg>`,
+			"eth.svg": `<svg fill="currentColor"><path d="` + data + `"/></svg>`,
+		})
+	}
+
+	fp, err := FingerprintSet(set)
+	if err != nil {
+		t.Fatal(err)
+	}
+	best, err := BestDirectory(pkg, fp)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(best.Rivals) != 2 {
+		t.Fatalf("expected the two sibling variants as rivals, got %v (winner %q)", best.Rivals, best.Dir)
+	}
+	if got := Classify(best, fp.Count()); got != ConfidenceAmbiguous {
+		t.Errorf("confidence %q: a coin toss between variant directories must not grade as a resolution", got)
+	}
+}
+
+// TestATieIsSettledByResemblance is the cryptocurrency-icons case: four
+// variant directories with the same filenames, and the committed set is one of
+// them with fill="currentColor" added to the root.
+//
+// Name coverage scores all four identically and none is byte-identical, so the
+// old scorer returned whichever the walk reached last -- svg/white, against a
+// set vendored from svg/black. A refresh would then have replaced every
+// themeable icon with a hard-coded #FFF one, invisible on a light background,
+// at an unchanged file count that the retention guard waves straight through.
+func TestATieIsSettledByResemblance(t *testing.T) {
+	const path = `M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16-7.163 16-16 16z`
+	set := writeSVGs(t, t.TempDir(), map[string]string{
+		"btc.svg": `<svg viewBox="0 0 32 32" fill="currentColor"><path fill-rule="evenodd" d="` + path + `"/></svg>`,
+	})
+
+	pkg := t.TempDir()
+	writeSVGs(t, filepath.Join(pkg, "svg", "black"), map[string]string{
+		"btc.svg": `<svg viewBox="0 0 32 32"><path fill-rule="evenodd" d="` + path + `"/></svg>`,
+	})
+	writeSVGs(t, filepath.Join(pkg, "svg", "color"), map[string]string{
+		"btc.svg": `<svg viewBox="0 0 32 32"><g fill="none"><circle cx="16" cy="16" r="16" fill="#F7931A"/></g></svg>`,
+	})
+
+	fp, err := FingerprintSet(set)
+	if err != nil {
+		t.Fatal(err)
+	}
+	best, err := BestDirectory(pkg, fp)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if best.Dir != filepath.FromSlash("svg/black") {
+		t.Errorf("chose %q, want svg/black -- the committed icons are that variant", best.Dir)
+	}
+	if len(best.Rivals) != 0 {
+		t.Errorf("the tie was settled, so it should not still report rivals: %v", best.Rivals)
+	}
+	if best.Similarity <= best.Runner {
+		t.Errorf("winner scored %.3f against runner-up %.3f", best.Similarity, best.Runner)
+	}
+	if got := Classify(best, fp.Count()); got != ConfidencePackage {
+		t.Errorf("confidence %q, want package", got)
+	}
+}
+
+// TestNestedDirectoriesAreNotRivals keeps the ambiguity check from firing on
+// the ordinary case. A package root and the single directory inside it tie
+// constantly; they are the same icons at two depths, not two answers, and the
+// deeper-wins rule already resolves them.
+func TestNestedDirectoriesAreNotRivals(t *testing.T) {
+	set := writeSVGs(t, t.TempDir(), map[string]string{"a.svg": `<svg>a</svg>`})
+
+	pkg := t.TempDir()
+	writeSVGs(t, filepath.Join(pkg, "icons"), map[string]string{"a.svg": `<svg>different</svg>`})
+
+	fp, err := FingerprintSet(set)
+	if err != nil {
+		t.Fatal(err)
+	}
+	best, err := BestDirectory(pkg, fp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(best.Rivals) != 0 {
+		t.Errorf("a parent and its child are not rivals, got %v", best.Rivals)
+	}
+	if got := Classify(best, fp.Count()); got != ConfidencePackage {
+		t.Errorf("confidence %q, want package", got)
+	}
+}
+
+// TestDuplicateDirectoriesAreNotAmbiguous separates a packaging duplicate from
+// a real variant choice.
+//
+// ionicons ships the same flat icon directory three times -- dist/svg,
+// dist/ionicons/svg, and inside the Stencil collection output. All three tie,
+// none nests inside another, and none is byte-identical to the committed set
+// because the pack vendored an older release. Treating that as a decision for
+// a human would have cost the set its manifest entry over a choice that does
+// not exist: every candidate produces the identical refresh.
+func TestDuplicateDirectoriesAreNotAmbiguous(t *testing.T) {
+	set := writeSVGs(t, t.TempDir(), map[string]string{
+		"heart.svg": `<svg>old</svg>`,
+		"star.svg":  `<svg>old</svg>`,
+	})
+
+	pkg := t.TempDir()
+	for _, copyAt := range []string{"dist/svg", "dist/ionicons/svg"} {
+		writeSVGs(t, filepath.Join(pkg, filepath.FromSlash(copyAt)), map[string]string{
+			"heart.svg": `<svg>new</svg>`,
+			"star.svg":  `<svg>new</svg>`,
+		})
+	}
+
+	fp, err := FingerprintSet(set)
+	if err != nil {
+		t.Fatal(err)
+	}
+	best, err := BestDirectory(pkg, fp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(best.Rivals) != 0 {
+		t.Errorf("copies of one directory are not a choice, got rivals %v", best.Rivals)
+	}
+	if got := Classify(best, fp.Count()); got != ConfidencePackage {
+		t.Errorf("confidence %q, want package", got)
+	}
 }

@@ -78,7 +78,7 @@ func buildBundled(pack *config.PackConfig, configDir string, dryRun bool) ([]*pi
 		// 1,383 under exactly that reshuffle.
 		p.Sink(sinks.Filesystem{
 			Root:         filepath.Join(filesRoot, name),
-			MinRetention: 0.90,
+			MinRetention: bundled.PackageCoverageFloor,
 		})
 
 		pipelines = append(pipelines, p)

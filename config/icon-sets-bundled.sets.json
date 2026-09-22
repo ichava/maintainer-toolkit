@@ -12,22 +12,52 @@
       "path": "icons",
       "confidence": "exact"
     },
+    "codicons": {
+      "package": "@vscode/codicons",
+      "path": "src/icons",
+      "confidence": "package",
+      "note": "upstream identified (426 of 426 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "coreui-icons": {
+      "package": "@coreui/icons",
+      "path": "svg",
+      "confidence": "package",
+      "note": "upstream identified (1579 of 1583 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
     "cryptocurrency-icons": {
       "package": "cryptocurrency-icons",
       "path": "svg/black",
       "confidence": "package",
-      "note": "upstream identified (482 of 483 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+      "note": "variant chosen by inspection, not by the scorer: the package ships svg/{black,white,color,icon} with the same 483 filenames, and the committed icons are svg/black with fill=\"currentColor\" added to the root -- identical path data, 0.97 similarity against black and 0.64 against white. Picking white would render every icon in hard-coded #FFF, invisible on a light background, at an unchanged file count. Version still needs pinning"
+    },
+    "element-plus-icons": {
+      "package": "@element-plus/icons-svg",
+      "path": ".",
+      "confidence": "package",
+      "note": "upstream identified (293 of 293 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
     },
     "feather-icons": {
       "package": "feather-icons",
       "path": "dist/icons",
       "confidence": "exact"
     },
+    "fontawesome": {
+      "package": "@fortawesome/fontawesome-free",
+      "path": "svgs",
+      "confidence": "package",
+      "note": "upstream identified (2518 of 2523 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
     "govicons": {
       "package": "govicons",
       "path": "raw-svg",
       "confidence": "package",
       "note": "upstream identified (136 of 136 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "gravity-ui-icons": {
+      "package": "@gravity-ui/icons",
+      "path": "svgs",
+      "confidence": "package",
+      "note": "upstream identified (677 of 677 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
     },
     "grommet-icons": {
       "package": "grommet-icons",
@@ -54,9 +84,9 @@
     },
     "ionicons": {
       "package": "ionicons",
-      "path": "dist/collection/components/icon/svg",
+      "path": "dist/svg",
       "confidence": "package",
-      "note": "upstream identified (1356 of 1356 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+      "note": "variant chosen by inspection, not by the scorer: dist/svg writes explicit fill/stroke attributes, which is what the committed icons carry, while dist/ionicons/svg (and its duplicate under dist/collection) expresses the same drawings as class=\"ionicon-fill-none ionicon-stroke-width\" and renders as nothing without ionicons' own stylesheet. Version still needs pinning"
     },
     "jam-icons": {
       "package": "jam-icons",
@@ -75,6 +105,12 @@
       "path": "icons",
       "confidence": "package",
       "note": "upstream identified (1843 of 1863 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "maki-icons": {
+      "package": "@mapbox/maki",
+      "path": "icons",
+      "confidence": "package",
+      "note": "upstream identified (211 of 211 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
     },
     "mdi": {
       "package": "@mdi/svg",
@@ -96,9 +132,14 @@
     },
     "pepicons": {
       "package": "pepicons",
-      "path": "svg/pencil",
+      "path": "svg/pop",
       "confidence": "package",
       "note": "upstream identified (1250 of 1250 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "phosphor-icons": {
+      "package": "@phosphor-icons/core",
+      "path": ".",
+      "confidence": "exact"
     },
     "prime-icons": {
       "package": "primeicons",
@@ -106,11 +147,34 @@
       "confidence": "package",
       "note": "upstream identified (254 of 260 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
     },
+    "remix-icon": {
+      "package": "remixicon",
+      "path": "icons",
+      "confidence": "strong"
+    },
     "simple-line-icons": {
       "package": "simple-line-icons",
       "path": "src/svgs",
       "confidence": "package",
       "note": "upstream identified (189 of 189 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "tabler-icons": {
+      "package": "@tabler/icons",
+      "path": "icons",
+      "confidence": "package",
+      "note": "upstream identified (5953 of 5963 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "typicons": {
+      "package": "typicons.font",
+      "path": "src/svg",
+      "confidence": "package",
+      "note": "upstream identified (336 of 336 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "uiw-icons": {
+      "package": "@uiw/icons",
+      "path": "icon",
+      "confidence": "package",
+      "note": "upstream identified (214 of 214 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
     },
     "vaadin-icons": {
       "package": "vaadin-icons",

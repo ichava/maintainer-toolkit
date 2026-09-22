@@ -6,6 +6,55 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **The audit reports a tie it cannot break instead of returning one.** A package that ships
+  sibling variant directories -- `cryptocurrency-icons` has `svg/{black,white,color,icon}`, each
+  with the same 483 filenames -- defeats name scoring completely: all four cover the set equally,
+  and when the pack vendored an older release none of them is byte-identical either. The scorer
+  was then returning whichever directory `WalkDir` reached last and grading it `package`.
+
+  It reached `svg/white`. The committed icons are `svg/black` with `fill="currentColor"` added to
+  the root, so a refresh would have replaced every themeable icon with a hard-coded `#FFF` one,
+  invisible on a light background -- **at an identical file count, so the retention guard would
+  have waved it straight through.** Re-auditing the 28 entries the manifest had accepted found
+  five such ties, and three of the five had resolved to the wrong directory.
+
+  Ties are now settled where they can be measured and reported where they cannot:
+
+  - A rival holding the *same bytes* under a second path is a packaging duplicate, not a choice,
+    and is excluded. `ionicons` ships its icons at `dist/ionicons/svg` and again under
+    `dist/collection/components/icon/svg` -- byte-identical to each other.
+  - A rival that genuinely differs is compared by resemblance to the committed icons, and the
+    tie is settled when one is clearly closest. That fixes `fontawesome` (`svgs`, not FA7's
+    640x640 `svgs-full` against a committed 448x512) and `pepicons` (`svg/pop`, not `svg/print`).
+  - Anything closer than that grades **`ambiguous`**: the right package, an undecidable variant.
+    It is a separate grade from `partial` because the remaining work differs in kind -- a partial
+    result needs a better candidate package, an ambiguous one needs a human to name the variant.
+
+  The resemblance metric has a stated limit rather than a tuned threshold. Trigrams over a whole
+  file are dominated by the path data, so two variants drawing the identical shape and differing
+  only in a colour attribute score nearly the same -- exactly `cryptocurrency-icons`. Those stay
+  ambiguous. Tuning the margin until it happened to pick `black` would fit the constant to two
+  cases and settle the next one wrongly and silently.
+
+- **The manifest's acceptance floor is the refresh's retention floor**, one constant rather than
+  two literals. A set was admitted at 95% name coverage while the refresh refuses to replace a
+  directory below 90% retention, so the audit rejected entries a refresh would have accepted and
+  admitted none it would refuse. Measured, 95% excluded `@mapbox/maki` for `maki-icons` at 198 of
+  211 -- unmistakably the right project, rejected over thirteen retired icons. `recipes` now reads
+  `bundled.PackageCoverageFloor` directly, and a test pins the two together: two independent
+  literals would drift, and the drift would surface as a Monday cron refusing sets the audit
+  approved on Friday, with an error about upstream reorganising that would be the wrong
+  explanation entirely.
+
+- **`config/icon-sets-bundled.sets.json` carries 32 sets** covering 46,530 of the pack's 121,314
+  icons, up from the 21 the first audit established. Two are settled by inspection rather than by
+  the scorer and say so in their notes, with the evidence: `cryptocurrency-icons` to `svg/black`
+  and `ionicons` to `dist/svg`, whose sibling expresses the same drawings as
+  `class="ionicon-fill-none ionicon-stroke-width"` and renders as nothing without ionicons' own
+  stylesheet. `teeny-icons` was withdrawn -- its 1,200 committed icons merge upstream's `solid/`
+  and `outline/` with an `-o` suffix, which no single path can express; it now grades `partial`
+  at 600 of 1,200 and needs a rename rule, as `heroicons` and `google-material-design-icons` do.
+
 - **The per-set native refresh for `icon-sets-bundled`.** One pipeline per set, each from that
   set's own upstream, so every set keeps the SVG dialect it actually ships in rather than being
   rewritten into a uniform one. Driven by `config/icon-sets-bundled.sets.json`, seeded from the
