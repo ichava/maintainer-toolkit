@@ -47,6 +47,33 @@
       "confidence": "package",
       "note": "upstream identified (2518 of 2523 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
     },
+    "google-material-design-icons": {
+      "package": "@material-design-icons/svg",
+      "variants": [
+        {
+          "path": "filled"
+        },
+        {
+          "path": "outlined",
+          "suffix": "-o"
+        },
+        {
+          "path": "round",
+          "suffix": "-r"
+        },
+        {
+          "path": "sharp",
+          "suffix": "-s"
+        },
+        {
+          "path": "two-tone",
+          "suffix": "-tt"
+        }
+      ],
+      "separator": "-",
+      "confidence": "package",
+      "note": "flattened from five upstream directories, with upstream's underscores rewritten to the dashes the pack uses -- without that only 607 of 2168 names per variant line up. Produces 10,610 of the 10,751 committed icons (98%); the remaining 141 were retired upstream. No byte matches, so the version still needs pinning"
+    },
     "govicons": {
       "package": "govicons",
       "path": "raw-svg",
@@ -64,6 +91,29 @@
       "path": "img",
       "confidence": "package",
       "note": "upstream identified (635 of 635 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "heroicons": {
+      "package": "heroicons",
+      "variants": [
+        {
+          "path": "24/outline",
+          "prefix": "o-"
+        },
+        {
+          "path": "24/solid",
+          "prefix": "s-"
+        },
+        {
+          "path": "20/solid",
+          "prefix": "m-"
+        },
+        {
+          "path": "16/solid",
+          "prefix": "c-"
+        }
+      ],
+      "confidence": "exact",
+      "note": "flattened from four upstream directories: the pack commits heroicons' 24/outline, 24/solid, 20/solid and 16/solid as o-, s-, m- and c-. Measured, the merge reproduces all 1288 committed icons byte for byte, with nothing new and nothing dropped"
     },
     "humbleicons": {
       "package": "humbleicons",
@@ -163,6 +213,20 @@
       "path": "icons",
       "confidence": "package",
       "note": "upstream identified (5953 of 5963 icons present by name) but no byte matches -- the pack vendored an older release; pin the version"
+    },
+    "teeny-icons": {
+      "package": "teenyicons",
+      "variants": [
+        {
+          "path": "solid"
+        },
+        {
+          "path": "outline",
+          "suffix": "-o"
+        }
+      ],
+      "confidence": "package",
+      "note": "flattened from solid/ and outline/, which the pack commits as the bare name and -o, 600 each. All 1200 committed icons are reproduced by name; none byte-identical, so the pack reformatted them (fill=\"currentColor\" on the root) and the version still needs pinning"
     },
     "typicons": {
       "package": "typicons.font",

@@ -366,3 +366,46 @@ func TestBundledRetentionFloorMatchesTheAuditFloor(t *testing.T) {
 	}
 	t.Error("no Filesystem sink in the set pipeline")
 }
+
+// TestBundledFlattensAVariantSet checks the recipe reaches for the right
+// transform, because the wrong one is destructive rather than merely wrong.
+//
+// SubsetTo would narrow the tree to a single variant and the Filesystem sink
+// wipes the destination first, so heroicons would refresh 324 icons and delete
+// the other 964. The retention guard would stop that particular case at 25%,
+// but a two-variant set landing at 50% is the same defect passing the guard.
+func TestBundledFlattensAVariantSet(t *testing.T) {
+	dir := t.TempDir()
+	m := &bundled.Manifest{Sets: map[string]bundled.SetSource{
+		"heroicons": {Package: "heroicons", Variants: []bundled.Variant{
+			{Path: "24/outline", Prefix: "o-"},
+			{Path: "16/solid", Prefix: "c-"},
+		}},
+	}}
+	if err := m.Save(bundled.ManifestPath(dir, "icon-sets-bundled")); err != nil {
+		t.Fatal(err)
+	}
+	pack := &config.PackConfig{
+		Name: "icon-sets-bundled", Pack: "ichava/icon-sets-bundled", PackRoot: "/work/b",
+		VersionFile: config.DefaultVersionFile, VersionKeys: config.DefaultVersionKeys(),
+		Source: config.SourceConfig{Type: "url"},
+	}
+
+	built, err := Build(pack, "2.2.0", true, dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, stage := range built[0].Stages() {
+		if _, ok := stage.(transforms.SubsetTo); ok {
+			t.Fatal("a variant set must not be narrowed to one directory")
+		}
+		if f, ok := stage.(transforms.FlattenVariants); ok {
+			if len(f.Variants) != 2 || f.Variants[1].Prefix != "c-" {
+				t.Errorf("variants did not reach the transform: %+v", f.Variants)
+			}
+			return
+		}
+	}
+	t.Error("no FlattenVariants stage")
+}

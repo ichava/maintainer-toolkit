@@ -55,7 +55,17 @@ func buildBundled(pack *config.PackConfig, configDir string, dryRun bool) ([]*pi
 			Config(cfg).
 			Source(sources.NpmTarball{Package: src.Package, Version: version})
 
-		if src.Path != "" {
+		switch {
+		case len(src.Variants) > 0:
+			// A flat set vendored from a multi-variant upstream. SubsetTo
+			// cannot express this: it would pick one variant, and because the
+			// sink wipes the destination first, the other variants' icons
+			// would be deleted rather than left alone.
+			p.Transform(transforms.FlattenVariants{
+				Variants:  flattenVariants(src.Variants),
+				Separator: src.Separator,
+			})
+		case src.Path != "":
 			p.Transform(transforms.SubsetTo{Subdir: src.Path})
 		}
 
@@ -102,4 +112,16 @@ func buildBundled(pack *config.PackConfig, configDir string, dryRun bool) ([]*pi
 	}
 
 	return pipelines, nil
+}
+
+// flattenVariants converts the manifest's variants into the transform's.
+//
+// The two types are deliberately separate: transforms is a generic layer and
+// has no business importing this pack's manifest schema.
+func flattenVariants(in []bundled.Variant) []transforms.Variant {
+	out := make([]transforms.Variant, len(in))
+	for i, v := range in {
+		out[i] = transforms.Variant{Subdir: v.Path, Prefix: v.Prefix, Suffix: v.Suffix}
+	}
+	return out
 }

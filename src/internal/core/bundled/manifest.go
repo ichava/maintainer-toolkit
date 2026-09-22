@@ -26,6 +26,18 @@ type Manifest struct {
 	Sets map[string]SetSource `json:"sets"`
 }
 
+// Variant is one upstream directory inside a flattened set, with the affix
+// that distinguishes its icons once every variant shares a directory.
+type Variant struct {
+	// Path is the directory inside the extracted package.
+	Path string `json:"path"`
+
+	// Prefix and Suffix mark this variant's filenames. A variant carrying
+	// neither is the unmarked one, which is how teeny-icons spells `solid`.
+	Prefix string `json:"prefix,omitempty"`
+	Suffix string `json:"suffix,omitempty"`
+}
+
 // SetSource is one set's upstream.
 type SetSource struct {
 	// Package is the npm package the icons come from.
@@ -37,7 +49,24 @@ type SetSource struct {
 	Version string `json:"version,omitempty"`
 
 	// Path is the directory inside the extracted package holding the SVGs.
-	Path string `json:"path"`
+	// Mutually exclusive with Variants.
+	Path string `json:"path,omitempty"`
+
+	// Variants merges several upstream directories into one flat set, which
+	// is what a pack does when it vendors a multi-variant upstream under one
+	// directory and distinguishes the variants by an affix on the filename.
+	//
+	// A single Path cannot express that, and the failure is not a partial
+	// refresh but a destructive one: the sink wipes the set first, so
+	// pointing Path at heroicons' 24/solid would refresh a quarter of the
+	// icons and delete the other three quarters. Three sets in this pack are
+	// this shape -- heroicons, google-material-design-icons and teeny-icons.
+	Variants []Variant `json:"variants,omitempty"`
+
+	// Separator normalises the character upstream puts between words when the
+	// pack spells them differently. Only google-material-design-icons needs
+	// it: upstream ships `18_up_rating` against the pack's `18-up-rating`.
+	Separator string `json:"separator,omitempty"`
 
 	// Confidence is how the entry was established, carried over from the audit
 	// so a reader can tell a measured entry from an asserted one. An entry
@@ -78,6 +107,19 @@ func LoadManifest(configDir, packName string) (*Manifest, error) {
 	for name, src := range m.Sets {
 		if src.Package == "" {
 			return nil, fmt.Errorf("%s: set %q has no package", path, name)
+		}
+		// Exactly one form. Both would leave it ambiguous which the refresh
+		// honours, and neither leaves it pointed at the package root, which
+		// for most upstreams is a README and a licence rather than icons.
+		if (src.Path == "") == (len(src.Variants) == 0) {
+			return nil, fmt.Errorf(
+				"%s: set %q must declare either `path` or `variants`, not both and not neither",
+				path, name)
+		}
+		for i, v := range src.Variants {
+			if v.Path == "" {
+				return nil, fmt.Errorf("%s: set %q variant %d has no path", path, name, i)
+			}
 		}
 	}
 	return &m, nil

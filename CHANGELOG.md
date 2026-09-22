@@ -6,6 +6,46 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **Rename rules, so a flat set vendored from a multi-variant upstream can be refreshed.** Three
+  sets commit several upstream directories as one flat directory, distinguishing the variants by
+  an affix on the filename, and a manifest `path` cannot express that. The failure would not have
+  been a partial refresh but a destructive one: the sink wipes the destination first, so pointing
+  `path` at heroicons' `24/solid` refreshes 324 icons and **deletes the other 964**.
+
+  A set may now declare `variants` instead, each with its own `path` and an optional `prefix` or
+  `suffix`, plus an optional `separator` when the pack and its upstream spell word breaks
+  differently. The rules were recovered by measurement rather than guessed, and the shipped Go
+  transform was run over the real packages to confirm it:
+
+  | Set | Upstream | Produced | Committed | Byte-identical | New | Dropped |
+  |---|---|---:|---:|---:|---:|---:|
+  | `heroicons` | `24/outline` `24/solid` `20/solid` `16/solid` as `o- s- m- c-` | 1,288 | 1,288 | **1,288** | 0 | 0 |
+  | `teeny-icons` | `solid` bare + `outline` as `-o` | 1,200 | 1,200 | 0 | 0 | 0 |
+  | `google-material-design-icons` | five variants as bare `-o -r -s -tt` | 10,610 | 10,751 | 0 | 0 | 141 |
+
+  **heroicons reproduces every committed icon byte for byte**, which is as strong as evidence for
+  a recovered rule gets. `teeny-icons` matches every name but no bytes -- the pack reformatted
+  them onto `fill="currentColor"` -- and gmdi drops 141 icons upstream has retired, at 98%
+  retention. **None of the three produces an icon the pack does not already have**, which is what
+  rules out an affix rule that happens to cover the set while meaning something else.
+
+  `google-material-design-icons` also needs `"separator": "-"`: upstream ships `18_up_rating`
+  against the pack's `18-up-rating`, and without the rewrite only 607 of 2,168 names per variant
+  line up -- which is exactly why the audit had been reporting it as a partial match against the
+  right package.
+
+  Two ways this loses an icon quietly are refused rather than tolerated. **A collision** -- an
+  upstream icon whose own name ends in another variant's suffix, so `outline/foo.svg` and
+  `solid/foo-o.svg` both flatten onto `foo-o.svg` -- fails the run naming both sources, because
+  the second copy would replace the first at an unchanged file count and the retention guard
+  would see a clean swap. There are none in this pack today, which is a fact about today's
+  upstreams and not a property of the scheme. **A variant that resolves to a missing or empty
+  directory** likewise fails, rather than refreshing a fraction of the set over a wipe.
+
+  The manifest now requires exactly one of `path` and `variants`: both is ambiguous about which
+  the refresh honours, and neither leaves the entry pointed at the package root, which for most
+  upstreams is a README and a licence rather than icons.
+
 - **The audit reports a tie it cannot break instead of returning one.** A package that ships
   sibling variant directories -- `cryptocurrency-icons` has `svg/{black,white,color,icon}`, each
   with the same 483 filenames -- defeats name scoring completely: all four cover the set equally,
@@ -46,8 +86,8 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   approved on Friday, with an error about upstream reorganising that would be the wrong
   explanation entirely.
 
-- **`config/icon-sets-bundled.sets.json` carries 32 sets** covering 46,530 of the pack's 121,314
-  icons, up from the 21 the first audit established. Two are settled by inspection rather than by
+- **`config/icon-sets-bundled.sets.json` carries 35 sets** covering 59,769 of the pack's 121,314
+  icons -- 49%, against the 21 sets and 38% the first audit established. Two are settled by inspection rather than by
   the scorer and say so in their notes, with the evidence: `cryptocurrency-icons` to `svg/black`
   and `ionicons` to `dist/svg`, whose sibling expresses the same drawings as
   `class="ionicon-fill-none ionicon-stroke-width"` and renders as nothing without ionicons' own
