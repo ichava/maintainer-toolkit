@@ -99,6 +99,11 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   `.scripts/migration/census*.json` keeps the old slugs: it is a dated measurement of the tree as
   it was, not configuration.
 
+- **Dead links to the deleted `ichava/documentation` repository removed.** That repository no
+  longer exists, so every cross-reference to it resolved to a 404. The reporting channels in
+  `SECURITY.md` were already stated inline and are unchanged; the Code of Conduct now cites the
+  Contributor Covenant directly. Historical mentions in this changelog are left as written.
+
 ### Fixed
 
 - **The README's link label named the old central docs repo.** The URL was already correct —

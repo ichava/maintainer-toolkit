@@ -141,7 +141,6 @@ would be scope creep without user demand.
 
 - [`icon-pack-upstream-tracking.md`](upstream-tracking.md) -- the host-app side of the story
 - [`architecture.md`](https://opensource.simtabi.com/documentation/ichava/core/architecture) -- where this slots into the package topology
-- [`security-model.md`](https://github.com/ichava/documentation/blob/main/security-model.md) -- HTTP timeouts + cache poisoning considerations on the version-check endpoints
 
 ---
 

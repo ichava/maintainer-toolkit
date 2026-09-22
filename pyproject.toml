@@ -50,7 +50,7 @@ imt = "ichava_maintainer_toolkit.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/ichava/maintainer-toolkit"
-Documentation = "https://github.com/ichava/documentation"
+Documentation = "https://github.com/ichava/maintainer-toolkit/tree/main/docs"
 Repository = "https://github.com/ichava/maintainer-toolkit"
 Issues = "https://github.com/ichava/maintainer-toolkit/issues"
 
