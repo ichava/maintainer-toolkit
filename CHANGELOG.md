@@ -49,7 +49,6 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   > is correct — I reimplemented that check with `is_dir()` in a throwaway probe and was one step
   > from filing a defect against working code. Read the predicate the code uses.
 
-
 - **`actionlint` runs on every pull request.** Nothing validated the workflow files at all:
   `release.yml` triggers only on `push: tags`, so a broken workflow was first observed as a
   release that refused to start — after the decision to release had been made.
@@ -111,7 +110,6 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   resolves and the text next to it is wrong — `lychee` and every `](...)` sweep pass it. Found
   by grepping for `` `…documentation/….md` `` rather than for links, after the estate-wide link
   scan came back at zero.
-
 
 - **A failed SBOM download no longer takes the whole release down.** `release.yml` generates the
   SBOM before it publishes, and the Syft installer fetches its checksums from GitHub's
