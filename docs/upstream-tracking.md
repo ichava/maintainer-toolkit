@@ -180,7 +180,6 @@ the full architecture.
 
 - [`architecture.md`](https://opensource.simtabi.com/documentation/ichava/core/architecture) -- where this slots into the
   overall service-provider hierarchy
-- [`security-model.md`](https://github.com/ichava/documentation/blob/main/security-model.md) -- HTTP timeout / cache
   poisoning considerations for the version-check endpoints
 
 ---
