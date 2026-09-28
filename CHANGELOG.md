@@ -372,7 +372,6 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
   by grepping for `` `…documentation/….md` `` rather than for links, after the estate-wide link
   scan came back at zero.
 
-## [Unreleased]
 ## [0.1.3] - 2026-09-22
 
 ### Added
