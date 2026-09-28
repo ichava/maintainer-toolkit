@@ -6,6 +6,10 @@ All notable changes to `ichava/maintainer-toolkit` follow [Keep a Changelog](htt
 
 ### Added
 
+- **CI runs the Go port.** A `Go` job in `tests.yml` checks `gofmt`, `go vet` and `go test`
+  against the module in `src/`, and fails if fewer than 10 packages are found, because a
+  run pointed at the wrong directory compiles nothing and passes.
+
 - **Rename rules, so a flat set vendored from a multi-variant upstream can be refreshed.** Three
   sets commit several upstream directories as one flat directory, distinguishing the variants by
   an affix on the filename, and a manifest `path` cannot express that. The failure would not have

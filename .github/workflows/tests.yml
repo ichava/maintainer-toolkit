@@ -65,6 +65,43 @@ jobs:
           flags: unittests
           fail_ci_if_error: false
 
+  go:
+    name: Go
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # The Go module lives in src/, not at the root. A bare `go test ./...` at the
+    # root finds no packages and passes, so every step names the module
+    # explicitly: `go-version-file` for setup-go, `go -C src` for the rest.
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l src)
+          if [ -n "$unformatted" ]; then
+            echo "::error::gofmt would reformat:"; echo "$unformatted"; exit 1
+          fi
+
+      - name: go vet
+        run: go -C src vet ./...
+
+      - name: go test
+        run: go -C src test -count=1 ./...
+
+      # A test run that compiled nothing would pass; pin the package count.
+      - name: Assert packages were tested
+        run: |
+          n=$(go -C src list ./... | wc -l)
+          echo "packages: $n"
+          [ "$n" -ge 10 ] || { echo "::error::only $n Go packages found under src/"; exit 1; }
+
   actionlint:
     name: Workflow lint
     runs-on: ubuntu-latest
